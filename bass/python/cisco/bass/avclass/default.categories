@@ -1,0 +1,19 @@
+{
+   "Dropper": "[dropper,drop,dldrop,exedrop,mdropper,muldrop,droppr,droppedo,docdl,docdrop,docdrp,macrodown]", 
+   "Exploit": "[cve,exploit,shellcode,exp,pidex]", 
+   "Ircbot": "[irc,botnet,ircbot]", 
+   "Joke": "[joke]", 
+   "Keylogger": "[keylog,keylogger,stealer,infostealer,banker]", 
+   "Malware": "[malware,malicious,malagent,maldroid,dangerousobject]", 
+   "Packed": "[packed,malpack,encpk,malob,crypt,cryptic,krypt,kryptk,kryptik,obfuscated,obfus,malcrypt,vbcrypt,vbkrypt,xpack,themida,pecompact,packer,cryptor,crypter,obfuscator,msilobfuscator,encoder]", 
+   "Phishing": "[phishing]", 
+   "Proxy": "[proxy]", 
+   "Ransomware": "[ransom,ransomlock,ransomcrypt,ransomware,filecoder]", 
+   "Spyware": "[spyware]", 
+   "Tool": "[tool,risktool,securitytool,fraudtool,virtool,keygen,hacktool,spamtool,flooder]", 
+   "Trojan": "[backdoor,bkdr,redirector,redirect,redir,iframe,bitcoin,bitcoinminer,injector,inject,vbinject,injcrypt,injected,porn,porndialer,dialer,mailer,email,massmailer,smtp,stmp,spammer,spambot,rogue,fakeav,fakealert,clicker,click,searcher]", 
+   "Virus": "[virus]", 
+   "Worm": "[worm,networm,emailworm]", 
+   "Adware": "[adware,adclicker]", 
+   "Downloader": "[downloader,downldr,dloader,dwnldr,dldr,dloadr,dloade,download,dload,downware,downagent,exedown,downldexe]"
+}

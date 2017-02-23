@@ -1,0 +1,2139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0072)https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head profile="http://gmpg.org/xfn/11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Automating AV signature generation | blog.zynamics.com</title>
+<link rel="pingback" href="https://blog.zynamics.com/xmlrpc.php">
+		<script defer="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/beacon.js"></script><script src="./2010-02-17 zynamics.com - Automating AV signature generation_files/remote-login.php" type="text/javascript"></script>
+		<script type="text/javascript">
+		/* <![CDATA[ */
+			if ( 'function' === typeof WPRemoteLogin ) {
+				document.cookie = "wordpress_test_cookie=test; path=/";
+				if ( document.cookie.match( /(;|^)\s*wordpress_test_cookie\=/ ) ) {
+					WPRemoteLogin();
+				}
+			}
+		/* ]]> */
+		</script>
+		<link rel="dns-prefetch" href="https://s2.wp.com/">
+<link rel="dns-prefetch" href="https://s0.wp.com/">
+<link rel="dns-prefetch" href="https://zynamics.wordpress.com/">
+<link rel="dns-prefetch" href="https://s1.wp.com/">
+<link rel="dns-prefetch" href="https://s.wordpress.com/">
+<link rel="alternate" type="application/rss+xml" title="blog.zynamics.com » Feed" href="https://blog.zynamics.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="blog.zynamics.com » Comments Feed" href="https://blog.zynamics.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="blog.zynamics.com » Automating AV signature generation Comments Feed" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/feed/">
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s1.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1473172720h&ver=4.6.1-RC1-38499"}};
+			!function(a,b,c){function d(a){var c,d,e,f,g,h=b.createElement("canvas"),i=h.getContext&&h.getContext("2d"),j=String.fromCharCode;if(!i||!i.fillText)return!1;switch(i.textBaseline="top",i.font="600 32px Arial",a){case"flag":return i.fillText(j(55356,56806,55356,56826),0,0),!(h.toDataURL().length<3e3)&&(i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,65039,8205,55356,57096),0,0),c=h.toDataURL(),i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,55356,57096),0,0),d=h.toDataURL(),c!==d);case"diversity":return i.fillText(j(55356,57221),0,0),e=i.getImageData(16,16,1,1).data,f=e[0]+","+e[1]+","+e[2]+","+e[3],i.fillText(j(55356,57221,55356,57343),0,0),e=i.getImageData(16,16,1,1).data,g=e[0]+","+e[1]+","+e[2]+","+e[3],f!==g;case"simple":return i.fillText(j(55357,56835),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode8":return i.fillText(j(55356,57135),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode9":return i.fillText(j(55358,56631),0,0),0!==i.getImageData(16,16,1,1).data[0]}return!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i;for(i=Array("simple","flag","unicode8","diversity","unicode9"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script src="./2010-02-17 zynamics.com - Automating AV signature generation_files/wp-emoji-release.min.js" type="text/javascript"></script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="all-css-0-1" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource" type="text/css" media="all">
+<!--[if lte IE 8]>
+<link rel='stylesheet' id='kubrick-ie-css'  href='https://s0.wp.com/wp-content/themes/pub/kubrick/ie.css?m=1273203575h&#038;ver=4.6.1-RC1-38499' type='text/css' media='all' />
+<![endif]-->
+<link rel="stylesheet" id="all-css-2-1" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(1)" type="text/css" media="all">
+<link rel="stylesheet" id="print-css-3-1" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/global-print.css" type="text/css" media="print">
+<link rel="stylesheet" id="all-css-4-1" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(2)" type="text/css" media="all">
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(3)"></script>
+<link rel="stylesheet" id="all-css-0-2" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/style.css" type="text/css" media="all">
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='https://s1.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1351637563h&#038;ver=20110606' type='text/css' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://zynamics.wordpress.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Resolving dynamic function calls with BinNavi" href="https://blog.zynamics.com/2010/02/14/resolving-dynamic-function-calls-with-binnavi/">
+<link rel="next" title="Reverse Engineering &amp; Bug Hunting Trainings Class @ CSW" href="https://blog.zynamics.com/2010/02/21/reverse-engineering-bug-hunting-trainings-class-csw/">
+<meta name="generator" content="WordPress.com">
+<link rel="canonical" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/">
+<link rel="shortlink" href="http://wp.me/pLaGt-4X">
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/1.0/?format=json&amp;url=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F&amp;for=wpcom-auto-discovery"><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/1.0/?format=xml&amp;url=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F&amp;for=wpcom-auto-discovery">
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Automating AV signature generation">
+<meta property="og:url" content="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/">
+<meta property="og:description" content="Hey all, I finally get around to writing about our automated byte signature generator. It’s going to be a bird’s eye view, so if you’re interested you’ll have to read Christ…">
+<meta property="article:published_time" content="2010-02-17T04:01:34+00:00">
+<meta property="article:modified_time" content="2010-02-18T11:22:19+00:00">
+<meta property="og:site_name" content="blog.zynamics.com">
+<meta property="og:image" content="https://zynamics.files.wordpress.com/2010/02/cluster.png?w=300">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:site" content="@wordpressdotcom">
+<meta name="twitter:image" content="https://zynamics.files.wordpress.com/2010/02/venn11.png?w=240">
+<meta name="twitter:card" content="summary">
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom">
+<link rel="shortcut icon" type="image/x-icon" href="https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=32" sizes="16x16">
+<link rel="icon" type="image/x-icon" href="https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=32" sizes="16x16">
+<link rel="apple-touch-icon-precomposed" href="https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=114">
+<link rel="openid.server" href="https://zynamics.wordpress.com/?openidserver=1">
+<link rel="openid.delegate" href="https://zynamics.wordpress.com/">
+<link rel="search" type="application/opensearchdescription+xml" href="https://blog.zynamics.com/osd.xml" title="blog.zynamics.com">
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com">
+<style type="text/css"><!--
+body { background: url("https://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickbgcolor.gif"); }
+#page { background: url("https://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickbgwide.gif") repeat-y top !important; border: none; }
+#header { background: url("https://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickheader.gif") no-repeat bottom center; }
+#footer { background: url("https://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickfooter.gif") no-repeat bottom; border: none;}
+#header { margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
+#headerimg { margin: 7px 9px 0; height: 192px; width: 740px; }
+#headerimg h1 a, #headerimg h1 a:visited, #headerimg .description { color: ; }
+#headerimg h1 a, #headerimg .description { display:  }
+
+	--></style><meta name="application-name" content="blog.zynamics.com"><meta name="msapplication-window" content="width=device-width;height=device-height"><meta name="msapplication-tooltip" content="the official zynamics company blog"><meta name="msapplication-task" content="name=Subscribe;action-uri=https://blog.zynamics.com/feed/;icon-uri=https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=16"><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s2.wp.com/i/favicon.ico"><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s2.wp.com/i/favicon.ico"><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s2.wp.com/i/favicon.ico"><meta name="title" content="Automating AV signature generation | blog.zynamics.com on WordPress.com">
+<meta name="description" content="Hey all, I finally get around to writing about our automated byte signature generator. It&#39;s going to be a bird&#39;s eye view, so if you&#39;re interested you&#39;ll have to read Christian&#39;s thesis (in German) or wait for our academic paper (in English) to be accepted somewhere. First, some background: One of the things we&#39;re always…">
+<style type="text/css" id="syntaxhighlighteranchor"></style>
+		<link rel="stylesheet" id="custom-css-css" type="text/css" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(4)">
+		<style type="text/css"></style><link rel="stylesheet" type="text/css" id="gravatar-card-css" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/hovercard.css"><link rel="stylesheet" type="text/css" id="gravatar-card-services-css" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/services.css"><script src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13.json" type="text/javascript"></script></head>
+<body class="single single-post postid-307 single-format-standard mp6 customizer-styles-applied highlander-enabled highlander-light">
+<div id="page">
+
+<div id="header">
+	<div id="headerimg" onclick=" location.href=&#39;https://blog.zynamics.com&#39;;" style="cursor: pointer;">
+		<h1><a href="https://blog.zynamics.com/">blog.zynamics.com</a></h1>
+		<div class="description">the official zynamics company blog</div>
+	</div>
+</div>
+<hr>
+
+	<div id="content" class="widecolumn">
+
+	
+		<div class="navigation">
+			<div class="alignleft">« <a href="https://blog.zynamics.com/2010/02/14/resolving-dynamic-function-calls-with-binnavi/" rel="prev">Resolving dynamic function calls with&nbsp;BinNavi</a></div>
+			<div class="alignright"><a href="https://blog.zynamics.com/2010/02/21/reverse-engineering-bug-hunting-trainings-class-csw/" rel="next">Reverse Engineering &amp; Bug Hunting Trainings Class @&nbsp;CSW</a> »</div>
+		</div>
+
+		<div class="clear post-307 post type-post status-publish format-standard hentry category-signature-generation category-vxclass" id="post-307">
+			<h2>Automating AV signature&nbsp;generation</h2>
+			<small class="single-by"><span class="by-author"><span class="sep">by</span> <span class="author vcard"><a class="url fn n" href="https://blog.zynamics.com/author/tdullien/" title="View all posts by Thomas Dullien" rel="author">Thomas Dullien</a></span> </span></small>
+
+			<div class="entry">
+				<p>Hey all,<br>
+I finally get around to writing about our automated byte signature generator. It’s going to be a bird’s eye view, so if you’re interested you’ll have to read <a href="http://www.zynamics.com/downloads/blichmann-christian--diplomarbeit--final.pdf">Christian’s thesis</a> (in German) or wait for our academic paper (in English) to be accepted somewhere.</p>
+<p>First, some background: One of the things we’re always working on at zynamics is VxClass, our automated malware classification system. The underlying core that drives VxClass is the BinDiff 3 engine (about which I have <a href="http://addxorrol.blogspot.com/2009/03/diffing-x86-vs-arm-code.html">written</a> <a href="http://addxorrol.blogspot.com/2008/09/improving-binary-comparison-and-its.html">elsewhere</a>). An important insight about BinDiff’s algorithms is the following:</p>
+<p><strong>BinDiff works like an intersection operator between executables.</strong></p>
+<p style="text-align:left;">This is easily visualized as a Venn diagram: Running BinDiff on two executables identifies functions that are common to both executables and provides a mapping that makes it easy to find the corresponding function in executable B given any function in A.</p>
+<div data-shortcode="caption" id="attachment_309" style="width: 310px" class="wp-caption aligncenter"><img data-attachment-id="309" data-permalink="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/venn1-2/" data-orig-file="https://zynamics.files.wordpress.com/2010/02/venn11.png" data-orig-size="1095,818" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="venn1" data-image-description="" data-medium-file="https://zynamics.files.wordpress.com/2010/02/venn11.png?w=300&amp;h=224" data-large-file="https://zynamics.files.wordpress.com/2010/02/venn11.png?w=450" class="size-medium wp-image-309" title="venn1" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/venn11.png" alt="" width="300" height="224" srcset="https://zynamics.files.wordpress.com/2010/02/venn11.png?w=300&amp;h=224 300w, https://zynamics.files.wordpress.com/2010/02/venn11.png?w=600&amp;h=448 600w, https://zynamics.files.wordpress.com/2010/02/venn11.png?w=150&amp;h=112 150w" sizes="(max-width: 300px) 100vw, 300px"><p class="wp-caption-text">Two executables and the common code</p></div>
+<p style="text-align:left;">This intersection operator also forms the basis of the similarity score that VxClass calculates when classifying executables. This means that the malware families that are identified using VxClass <em>share code. </em>(Footnote: It might seem obvious that malware families should share code, but there is a lot of confusion around the term “malware family”, and before any confusion arises, it’s better to be explicit)</p>
+<p style="text-align:left;">So when we identify a number of executables to be part of a cluster, what we mean is that <em>pairwise, </em>code is shared — e.g. for each executable in the cluster, there is another executable in the cluster with which it shares a sizeable proportion of the code. Furthermore, the BinDiff algorithms provide us with a way of calculating the intersection of two executables. This means that we can also calculate the intersection of <em>all</em> executables in the cluster, and thus identify the <em>stable core</em> that is present in all samples of a malware family.</p>
+<p style="text-align:left;">What do we want from a “traditional” antivirus signature ? We would like it to match on all known samples of a family, and we would like it to not match on anything else. The signature should be easy to scan for — ideally just a bunch of bytes with wildcards.</p>
+<p style="text-align:left;">The bytes in the stable core form great candidates for the byte signature. The strategy to extract byte sequences then goes like this:</p>
+<ol>
+<li>Extract all functions in the stable core that occur in the same order in all executables in question</li>
+<li>From this, extract all basic blocks in the stable core that occur in the same order in all executables in question</li>
+<li>From this, extract (per basic block) the sequences of bytes that occur in the same order in all executables in question</li>
+<li>If any gaps occur, fill them with wildcards</li>
+</ol>
+<p>Sounds easy, eh ? <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"> Let’s understand the first step in the process better by looking at a diagram:</p>
+<div data-shortcode="caption" id="attachment_313" style="width: 310px" class="wp-caption aligncenter"><a href="https://zynamics.files.wordpress.com/2010/02/siggn1.png" target="_blank"><img data-attachment-id="313" data-permalink="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/siggn1/" data-orig-file="https://zynamics.files.wordpress.com/2010/02/siggn1.png" data-orig-size="2790,1300" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="siggn1" data-image-description="" data-medium-file="https://zynamics.files.wordpress.com/2010/02/siggn1.png?w=300&amp;h=139" data-large-file="https://zynamics.files.wordpress.com/2010/02/siggn1.png?w=450" class="size-medium wp-image-313" title="siggn1" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/siggn1.png" alt="" width="300" height="139" srcset="https://zynamics.files.wordpress.com/2010/02/siggn1.png?w=298&amp;h=139 298w, https://zynamics.files.wordpress.com/2010/02/siggn1.png?w=597&amp;h=278 597w, https://zynamics.files.wordpress.com/2010/02/siggn1.png?w=150&amp;h=70 150w" sizes="(max-width: 300px) 100vw, 300px"></a><p class="wp-caption-text">Four executables and the results of BinDiff between them</p></div>
+<p>The columns show four different executables – each green block represents one particular function. The black lines are “matches” that the BinDiff algorithms have identified. The first step is now to identify functions that are present in each of the executables. This is a fairly easy thing to do, and if we remove the functions that do not occur everywhere from our diagram, we get something like this:</p>
+<div data-shortcode="caption" id="attachment_317" style="width: 310px" class="wp-caption aligncenter"><a href="https://zynamics.files.wordpress.com/2010/02/siggn2.png"><img data-attachment-id="317" data-permalink="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/siggn2/" data-orig-file="https://zynamics.files.wordpress.com/2010/02/siggn2.png" data-orig-size="2790,1300" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="siggn2" data-image-description="" data-medium-file="https://zynamics.files.wordpress.com/2010/02/siggn2.png?w=300&amp;h=139" data-large-file="https://zynamics.files.wordpress.com/2010/02/siggn2.png?w=450" class="size-medium wp-image-317" title="siggn2" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/siggn2.png" alt="" width="300" height="139" srcset="https://zynamics.files.wordpress.com/2010/02/siggn2.png?w=298&amp;h=139 298w, https://zynamics.files.wordpress.com/2010/02/siggn2.png?w=597&amp;h=278 597w, https://zynamics.files.wordpress.com/2010/02/siggn2.png?w=150&amp;h=70 150w" sizes="(max-width: 300px) 100vw, 300px"></a><p class="wp-caption-text">Only functions that appear everywhere left</p></div>
+<p>Now, we of course still have to remove functions that do not appear in the same order in all executables. The best way to do this is using a k-LCS algorithm.</p>
+<p>What is a k-LCS algorithm ? LCS stands for <a href="http://en.wikipedia.org/wiki/Longest_common_subsequence_problem"><em>longest common subsequence</em></a> – given two sequences over the same alphabet, an LCS algorithm attempts to find the longest subsequence of both sequences. LCS calculations form the backbone of the UNIX <em>diff </em>command line tool. A natural extension of this problem is finding the longest common subsequence of <em>many </em>sequences (not just two) – and this extension is called k-LCS.</p>
+<p>This suffers from the slight drawback that k-LCS on arbitrary sequences is NP-hard — but in our particular case, the situation is much easier: We can simply put an arbitrary ordering on the functions, and our “k-LCS on sequences” gets reduced to “k-LCS on sequences that are permutations of each other” — in which case the entire thing can be efficiently solved (check Christian’s diploma thesis for details). The final result looks like this:</p>
+<div data-shortcode="caption" id="attachment_318" style="width: 310px" class="wp-caption aligncenter"><a href="https://zynamics.files.wordpress.com/2010/02/siggn3.png" target="_blank"><img data-attachment-id="318" data-permalink="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/siggn3/" data-orig-file="https://zynamics.files.wordpress.com/2010/02/siggn3.png" data-orig-size="2790,1300" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="siggn3" data-image-description="" data-medium-file="https://zynamics.files.wordpress.com/2010/02/siggn3.png?w=300&amp;h=139" data-large-file="https://zynamics.files.wordpress.com/2010/02/siggn3.png?w=450" class="size-medium wp-image-318" title="siggn3" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/siggn3.png" alt="Functions that occur in the same order" width="300" height="139" srcset="https://zynamics.files.wordpress.com/2010/02/siggn3.png?w=298&amp;h=139 298w, https://zynamics.files.wordpress.com/2010/02/siggn3.png?w=597&amp;h=278 597w, https://zynamics.files.wordpress.com/2010/02/siggn3.png?w=150&amp;h=70 150w" sizes="(max-width: 300px) 100vw, 300px"></a><p class="wp-caption-text">Functions that occur in the same order everywhere</p></div>
+<p style="text-align:center;">
+</p><p>Given the remaining functions, the entire process can be repeated on the basic block level. The final result of this is a list of basic blocks that are present in all executables in our cluster <em>in the same order</em>.<em> </em>We switch to a fast approximate k-LCS algorithm on the byte sequences obtained from these basic blocks. Any gaps are filled with “*”-wildcards.</p>
+<p>The result is quite cool: VxClass can automatically cluster new malicious software into clusters of similarity – and subsequently generate a traditional AV signature from these clusters. This AV signature will, by construction, match on all members of the cluster. Furthermore it will have some predictive effect: The variable parts of the malware get whittled away as you add more executables to generate the signature from.</p>
+<p>We have, of course, glossed over a number of subtleties here: It is possible that the signature obtained in this manner is empty. One also needs to be careful when dealing with statically linked libraries (otherwise the signature will have a large number of false positives).</p>
+<p><strong>So how well does this work in practice ?</strong></p>
+<p>We will go over a small case study now: We throw a few thousand files into our VxClass test system and run it for a bit. We then take the resulting clusters and automatically generate signatures from them. Some of the signatures can be seen <a href="http://storage.zynamics.com/files/vxclass/autosigs.ndb">here</a> — they are in ClamAV format, and of course they work on the unpacked binaries — but any good AV engine has&nbsp; a halfway decent unpacker anyhow.</p>
+<p>I will go through the process step-by step for one particular cluster. The cluster itself can be viewed <a href="http://storage.zynamics.com/files/vxclass/clusternew.pdf">here</a>. A low-resolution shot of it would be the following:</p>
+<div data-shortcode="caption" id="attachment_354" style="width: 310px" class="wp-caption aligncenter"><a href="https://zynamics.files.wordpress.com/2010/02/cluster.png" target="_blank"><img data-attachment-id="354" data-permalink="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/cluster/" data-orig-file="https://zynamics.files.wordpress.com/2010/02/cluster.png" data-orig-size="1338,359" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="cluster" data-image-description="" data-medium-file="https://zynamics.files.wordpress.com/2010/02/cluster.png?w=300&amp;h=80" data-large-file="https://zynamics.files.wordpress.com/2010/02/cluster.png?w=450" class="size-medium wp-image-354" title="cluster" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/cluster.png" alt="" width="300" height="80" srcset="https://zynamics.files.wordpress.com/2010/02/cluster.png?w=300&amp;h=80 300w, https://zynamics.files.wordpress.com/2010/02/cluster.png?w=596&amp;h=160 596w, https://zynamics.files.wordpress.com/2010/02/cluster.png?w=150&amp;h=40 150w" sizes="(max-width: 300px) 100vw, 300px"></a><p class="wp-caption-text">The cluster we're going to generate a signature for</p></div>
+<p>So how do the detection rates for this cluster in traditional AVs look ? Well, I threw the files into VirusTotal, and created the following graphic indicating the detection rates for these files: Each row in this matrix represents an executable, and each column represents a different antivirus product (I have omitted the names). A yellow field at row 5 and column 10 means “the fifth executable in the cluster was detected by the tenth AV”, a white field at row 2 and column 1 means “the second executable in the cluster was not detected by the first AV”.</p>
+<table border="6" cellspacing="0" cellpadding="2" align="center">
+<caption>Detection Matrix for 32 samples from the cluster<br>
+Rows are executables<br>
+Columns are AV engines</caption>
+<tbody>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+</tr>
+<tr>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffcc00;color:black;">.</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+<td class="codes" style="background-color:#ffffff;color:black;">–</td>
+</tr>
+</tbody>
+</table>
+<p>What we can see here is the following:</p>
+<ol>
+<li>No Antivirus product detects all elements of this cluster</li>
+<li>Detection rates vary widely for this cluster: Some AVs detect 25 out of 32 files (78%), some … 0/32 (0%)</li>
+</ol>
+<p>If we inspect the names along with the detection results&nbsp; (which you can do in <a href="http://storage.zynamics.com/files/vxclass/detectiontable.html">this table</a>), we can also see which different names are assigned by the different AVs to this malware.</p>
+<p>So, let’s run our signature generator on this cluster of executables.</p>
+<blockquote><p>time /opt/vxclass/bin/vxsig “7304 vs 9789.BinDiff” “9789 vs 10041.BinDiff” “10041 vs 10202.BinDiff” “10202 vs 10428.BinDiff” “10428 vs 10654.BinDiff” “10654 vs 10794.BinDiff” “10794 vs 11558.BinDiff” “11558 vs 11658.BinDiff” “11658 vs 12137.BinDiff” “12137 vs 12434.BinDiff” “12434 vs 12723.BinDiff” “12723 vs 13426.BinDiff” “13426 vs 13985.BinDiff” “13985 vs 13995.BinDiff” “13995 vs 14007.BinDiff” “14007 vs 14023.BinDiff” “14023 vs 14050.BinDiff” “14050 vs 14100.BinDiff” “14100 vs 14107.BinDiff” “14107 vs 14110.BinDiff” “14110 vs 14145.BinDiff” “14145 vs 14235.BinDiff” “14235 vs 14240.BinDiff” “14240 vs 14323.BinDiff” “14323 vs 14350.BinDiff” “14350 vs 14375.BinDiff” “14375 vs 14378.BinDiff” “14378 vs 14415.BinDiff” “14415 vs 14424.BinDiff” “14424 vs 14486.BinDiff” “14486 vs 14520.BinDiff” “14520 vs 14549.BinDiff” “14549 vs 14615.BinDiff” “14615 vs 14700.BinDiff”</p></blockquote>
+<p>The entire thing takes roughly 40 seconds to run. The resulting signature can be viewed <a href="http://storage.zynamics.com/files/vxclass/renos.fakeAV.ndb">here</a>.</p>
+<p>So, to summarize:</p>
+<ol>
+<li>Using VxClass, we can quickly sort new malicious executables into clusters based on the amount of code they share</li>
+<li>Using the results from our BinDiff and some clever algorithmic trickery, we can generate “traditional” byte signatures automatically</li>
+<li>These signatures are <em>guaranteed</em> to match on all executables that were used in the construction of the signature</li>
+<li>The signatures have some predictive power, too: In a drastic example we generated a signature from 15 Swizzor variants that then went on to detect 929 new versions of the malware</li>
+<li>These are post-unpacking signatures — e.g. your scanning engine needs to do a halfways decent job at unpacking in order for these signatures to work</li>
+</ol>
+<p>If you happen to work for an AV company and think this technology might be useful for you, please contact <a href="mailto:info@zynamics.com">info@zynamics.com</a> <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"></p>
+<div id="jp-post-flair" class="sharedaddy sd-like-enabled"><div class="sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-loaded" id="like-post-wrapper-11242489-307-589d685d57cad" data-src="//widgets.wp.com/likes/#blog_id=11242489&amp;post_id=307&amp;origin=zynamics.wordpress.com&amp;obj_id=11242489-307-589d685d57cad" data-name="like-post-frame-11242489-307-589d685d57cad"><h3 class="sd-title">Like this:</h3><div class="likes-widget-placeholder post-likes-widget-placeholder" style="height: 55px; display: none;"><span class="button"><span>Like</span></span> <span class="loading">Loading...</span></div><iframe class="post-likes-widget jetpack-likes-widget" name="like-post-frame-11242489-307-589d685d57cad" height="55px" width="100%" frameborder="0" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource.html"></iframe><span class="sd-text-color"></span><a class="sd-link-color"></a></div></div>
+								
+				<p class="postmetadata alt">
+					<small>
+												This entry was posted on 2010-02-17 at 04:01 and is filed under <a href="https://blog.zynamics.com/category/vxclass/signature-generation/" rel="category tag">Signature Generation</a>, <a href="https://blog.zynamics.com/category/vxclass/" rel="category tag">VxClass</a>.						You can follow any responses to this entry through the <a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/feed/">RSS 2.0</a> feed.
+													You can <a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#respond">leave a response</a>, or <a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/trackback/" rel="trackback">trackback</a> from your own site.
+						
+					</small>
+				</p>
+
+			</div>
+		</div>
+
+	
+<!-- You can start editing here. -->
+	<h3 id="comments">23 Responses to “Automating AV signature&nbsp;generation”</h3>
+
+	<ol class="commentlist">
+					<li class="comment even thread-even depth-1 highlander-comment" id="comment-47">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/fff18c8f92e42ad51ee08c086f04ec1e" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/fff18c8f92e42ad51ee08c086f04ec1e?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-fff18c8f92e42ad51ee08c086f04ec1e-0">			<cite><a href="http://www.rajatswarup.com/blog" rel="external nofollow" class="url">rajat swarup</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-47" title="">2010-02-18 at 11:26</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=47#respond" onclick="return addComment.moveForm( &quot;comment-47&quot;, &quot;47&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to rajat swarup">Reply</a> </small>
+
+			<p>This is awesome.  The key is that this works on unpacked binaries.  How about encoded shellcode in unpacked binaries…would this method be able to determine such stub programs.</p>
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-49">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/d7aacaadf961f528f1a6515cc14eb091" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://1.gravatar.com/avatar/d7aacaadf961f528f1a6515cc14eb091?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-d7aacaadf961f528f1a6515cc14eb091-0">			<cite>Chopstick</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-49" title="">2010-02-18 at 13:03</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=49#respond" onclick="return addComment.moveForm( &quot;comment-49&quot;, &quot;49&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Chopstick">Reply</a> </small>
+
+			<p>For encoded shellcode, I guess at the very least it may detect the encoding algorithm. Not much to go on, but might be enough. I’m guessing malware authors will often reuse bits of tough to write code.</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-53">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-0">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-53" title="">2010-02-18 at 20:27</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=53#respond" onclick="return addComment.moveForm( &quot;comment-53&quot;, &quot;53&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey,</p>
+<p>yeah, if we do not unpack, the above algorithms generate signatures for the unpacker stub…</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-even depth-1 highlander-comment" id="comment-51">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/6d9681f67d85c81bf9c066a56bce93d3" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/6d9681f67d85c81bf9c066a56bce93d3?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-6d9681f67d85c81bf9c066a56bce93d3-0">			<cite>Jamie Butler</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-51" title="">2010-02-18 at 15:52</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=51#respond" onclick="return addComment.moveForm( &quot;comment-51&quot;, &quot;51&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Jamie Butler">Reply</a> </small>
+
+			<p>Thomas,</p>
+<p>Great work as always! Have you automated steps 1 and 2 so that if a binary is submitted a byte sequence/”signature” is returned? This technology would definitely make AV more efficient and help with accuracy/completeness.</p>
+<p>Hope to see you at CanSecWest.<br>
+Jamie</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-52">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-1">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-52" title="">2010-02-18 at 20:24</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=52#respond" onclick="return addComment.moveForm( &quot;comment-52&quot;, &quot;52&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey Jamie,</p>
+<p>glad you like it <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"> — yes, the first two steps are automated as well. We don’t do “submit-return sig yet”, but instead you can do “submit – get cluster – get signature for cluster” <img draggable="false" class="emoji" alt="😉" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f609.svg" scale="0"></p>
+<p>Cheers,<br>
+Halvar/Thomas</p>
+<ul class="children">
+			<li class="comment odd alt depth-3 highlander-comment" id="comment-54">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/6d9681f67d85c81bf9c066a56bce93d3" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/6d9681f67d85c81bf9c066a56bce93d3?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-6d9681f67d85c81bf9c066a56bce93d3-1">			<cite>Jamie Butler</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-54" title="">2010-02-18 at 20:55</a> </small>
+
+			<p>Cool. Are the byte sequences returned register neutral? I know that you have focused on that before when doing your difference analysis, but obviously that would mean the byte signature would have to be translated into its literal permutations for AV to search for it.</p>
+<p>Jamie</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-55">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-2">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-55" title="">2010-02-18 at 23:20</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=55#respond" onclick="return addComment.moveForm( &quot;comment-55&quot;, &quot;55&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Since we whittle away all the variation between the samples, the sequences will be register neutral if two executables in the cluster got very different register assignment.</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-57">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/351442aec110448dc5766e0f90860179" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/351442aec110448dc5766e0f90860179?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-351442aec110448dc5766e0f90860179-0">			<cite>DumDum</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-57" title="">2010-02-19 at 05:09</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=57#respond" onclick="return addComment.moveForm( &quot;comment-57&quot;, &quot;57&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to DumDum">Reply</a> </small>
+
+			<p>Hm. Metamorphic == game over, right?</p>
+<p>Also: what kind of checks does VxClass perform during the building of said clusters, to maybe say “hm. Maybe I should put sample B aside for a second, come back to it in a 2nd round of analysis . . . ”</p>
+<p>Looking at your ABCD diagram. If, by step 2, VxClass had separated B from the sample set, you’ll end with a higher accuracy sig for ACD – you can always then come back, pick B again, and generate a “lesser quality/more general” signature.</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-61">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-3">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-61" title="">2010-02-19 at 18:02</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=61#respond" onclick="return addComment.moveForm( &quot;comment-61&quot;, &quot;61&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey DumDum,</p>
+<p>metamorphic does not necessarily mean “game over”. You can have a metamorphic engine that still generates stable patterns.</p>
+<p>Regarding the logic for splitting/reordering clusters: If you come up with an empty signature, it is relatively easy to quantify which samples created large “losses”, and remove them first.</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-even depth-1 highlander-comment" id="comment-59">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/67476cb080a40b09ed240ee027d3848b" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/67476cb080a40b09ed240ee027d3848b?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-67476cb080a40b09ed240ee027d3848b-0">			<cite><a href="http://ipositivesecurity.blogspot.com/" rel="external nofollow" class="url">iVictor</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-59" title="">2010-02-19 at 15:26</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=59#respond" onclick="return addComment.moveForm( &quot;comment-59&quot;, &quot;59&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to iVictor">Reply</a> </small>
+
+			<p>Hi,</p>
+<p>Not sure if you are aware, Cisco CSA had been performing this functionality for a considerable time. Is there something distinct about this? I’d like to know.</p>
+<p>Good information and analysis though.</p>
+<p>Best Regards,<br>
+iVictor</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-60">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-4">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-60" title="">2010-02-19 at 18:00</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=60#respond" onclick="return addComment.moveForm( &quot;comment-60&quot;, &quot;60&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey iVictor,</p>
+<p>I have been around the ASA code base a fair bit and as far as I know it doesn’t do anything comparable. Which exact feature are you referring to ? <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"></p>
+<p>Cheers,<br>
+Thomas</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-64">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/90ff76324865a10f441a72855c71ca32" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/90ff76324865a10f441a72855c71ca32?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-90ff76324865a10f441a72855c71ca32-0">			<cite><a href="http://perpetualhorizon.blogspot.com/" rel="external nofollow" class="url">Curt Wilson</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-64" title="">2010-02-20 at 06:21</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=64#respond" onclick="return addComment.moveForm( &quot;comment-64&quot;, &quot;64&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Curt Wilson">Reply</a> </small>
+
+			<p>Thomas, he said CSA (cisco security agent), which is HIPS, and you wrote ASA, a firewall. So you appear to be talking about two different things. </p>
+<p>Thanks for the blog, it’s interesting to see automated approaches and as I get more interested in malware anlaysis, such processes are going to become more relevant.</p>
+<p>Curt Wilson</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-66">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-5">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-66" title="">2010-02-20 at 09:39</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=66#respond" onclick="return addComment.moveForm( &quot;comment-66&quot;, &quot;66&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Ah, right, my bad. What feature in CSA does this though?</p>
+<p>Isn’t CSA the artist formerly known as Okena ?</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-even depth-1 highlander-comment" id="comment-69">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/67476cb080a40b09ed240ee027d3848b" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://0.gravatar.com/avatar/67476cb080a40b09ed240ee027d3848b?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-67476cb080a40b09ed240ee027d3848b-1">			<cite><a href="http://ipositivesecurity.blogspot.com/" rel="external nofollow" class="url">iVictor</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-69" title="">2010-02-20 at 18:54</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=69#respond" onclick="return addComment.moveForm( &quot;comment-69&quot;, &quot;69&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to iVictor">Reply</a> </small>
+
+			<p>Hey Thomas,</p>
+<p>CSA has this functionality for couple of years now..automatic signature generation for MSRPC, LPC and exception based exploits. CSA detected Conficker in 15 sec by automatically generating the signature for it. It’s just that there’s no article or blog post about it.</p>
+<p>Best Regards,<br>
+iVictor</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-70">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-6">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-70" title="">2010-02-20 at 19:44</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=70#respond" onclick="return addComment.moveForm( &quot;comment-70&quot;, &quot;70&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey iVictor,</p>
+<p>are those behavioral signatures or byte signatures ? I thought that Okena/CSA were behavior-monitoring tools…</p>
+<p>Cheers,<br>
+Thomas</p>
+</li><!-- #comment-## -->
+			<li class="comment byuser comment-author-tdullien bypostauthor odd alt depth-2 highlander-comment" id="comment-124">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-7">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-124" title="">2010-03-12 at 14:34</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=124#respond" onclick="return addComment.moveForm( &quot;comment-124&quot;, &quot;124&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Ok, I read up on the topic. It is correct that CSA has some functionality to generate byte signatures for shellcodes that were caught executing in MSRPC and LPC attacks.</p>
+<p>The way I read the documentation on it, things seem to like this:</p>
+<p>1) The CSA tries to automatically detect intrusions that target specific RPC calls through the usual behavior-based heuristics.<br>
+2) The CSA inspects arguments to RPC/LPC calls. If it decides an attack is running, it uses the arguments to the RPC/LPC call as signature. If it detects multiple attacks, the kLCS of the arguments is used as new signature<br>
+3) The signatures are then created locally (and shared locally) and finally pushed “up” in the hierarchy</p>
+<p>The commonalities between this and what we’re doing are limited though. Admittedly, both approaches use a kLCS algorithm somewhere in the construction of a signature, but aside from that, things are quite different: The CSA approach can only generate signatures for arguments to RPC/LPC calls, and doesn’t really know how to tell data from code etc. — it is (technically) not much more than the things discussed in Kephart’s and Arnolds 1994 VB paper. But point taken: For RPC/LPC-based attack, the CSA approach should yield excellent results.</p>
+</li><!-- #comment-## -->
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-125">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-8">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-125" title="">2010-03-12 at 15:22</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=125#respond" onclick="return addComment.moveForm( &quot;comment-125&quot;, &quot;125&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>So the question was: What is distinct between the two approaches <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"></p>
+<p>1) The CSA has access to all arguments that are received upon invocation of an RPC or LPC call, and attacks for the same underlying vulnerability are very likely to have common subfeatures.<br>
+2) The CSA doesn’t operate on executable data at all — it can inspect all arguments (including the string that is overflowing a buffer etc.) and then determine a “common pattern” in a number of potentially different attacks on the same vulnerability.<br>
+3) Since there is no code, and the arguments to RPC or LPC calls are going to be comparatively short, CSA can just compute a kLCS over the strings themselves.<br>
+4) The signatures that are thus generated will prevent the exploitation of a particular bug.</p>
+<p>The risk of false positives is relatively low in CSA, too, as there is usually less RPC traffic than files in a system, and malicious arguments to RPC calls are -really- differently-looking than proper arguments (much longer, differently-shaped etc.)</p>
+<p>Our stuff is in a quite different situation to start out with: We have a bunch of -executables- (potentially of large size) on which the calculation of a string-based k-LCS is not feasible computationally. These executables can be megabytes in size, but aside from that, they are not much different from “legitimate” executables. </p>
+<p>The demand on low false-positive rates is much higher for AV signatures: You scan many more files than RPC requests, and the “bad” pieces of code are much more similar to the “good” pieces of code than in the RPC case.</p>
+<p>So, in short: We face a problem that is a fair bit harder, and thus have to roll out more algorithmic “big guns”.</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-82">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/a8902021770f66465986c21ee4085b34" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://1.gravatar.com/avatar/a8902021770f66465986c21ee4085b34?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-a8902021770f66465986c21ee4085b34-0">			<cite>caf</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-82" title="">2010-02-25 at 02:55</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=82#respond" onclick="return addComment.moveForm( &quot;comment-82&quot;, &quot;82&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to caf">Reply</a> </small>
+
+			<p>It seems like you could potentially get much better results if you didn’t have to reduce signatures down to the simplistic “bytes and wildcards” format.</p>
+<p>Have you put any thought into writing an AV engine that used the BinDiff algorithm internally, so that the signatures could remain in BinDiff-internal-representation format?</p>
+<ul class="children">
+			<li class="comment byuser comment-author-tdullien bypostauthor even depth-2 highlander-comment" id="comment-123">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/5c52fc400e4cdfdbecaa19228cc3df13" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://2.gravatar.com/avatar/5c52fc400e4cdfdbecaa19228cc3df13?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-5c52fc400e4cdfdbecaa19228cc3df13-9">			<cite>Thomas Dullien</cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-123" title="">2010-03-12 at 14:17</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=123#respond" onclick="return addComment.moveForm( &quot;comment-123&quot;, &quot;123&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Thomas Dullien">Reply</a> </small>
+
+			<p>Hey caf,</p>
+<p>it is true that a BinDiff-style algorithm would be even more resilient — but the advantage of regular byte signatures is that all the AVs -can- already scan for them, whereas it is unclear how BinDiff-style algorithms can be made to run at speeds that are comparable to byte matching…</p>
+<p>Cheers,<br>
+Thomas</p>
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+			<li class="comment byuser comment-author-evilcodecave odd alt thread-even depth-1 highlander-comment" id="comment-127">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/74719b18747fa661bc39dcf591c09d04" class="avatar avatar-32 grav-hashed grav-hijack" height="32" width="32" originals="32" src-orig="https://1.gravatar.com/avatar/74719b18747fa661bc39dcf591c09d04?s=32&amp;d=identicon&amp;r=G" scale="2" id="grav-74719b18747fa661bc39dcf591c09d04-0">			<cite><a href="http://evilcry.altervista.org/" rel="external nofollow" class="url">evilcodecave</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-127" title="">2010-03-13 at 07:27</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=127#respond" onclick="return addComment.moveForm( &quot;comment-127&quot;, &quot;127&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to evilcodecave">Reply</a> </small>
+
+			<p>Hi,</p>
+<p>Sounds like a great work!, some month ago I started to code a similar tool, which works with FuzzyHashing and supports packer detection. The main scope of this tool was precisely to identify in a first time common static pattern, successively filter and refine results, to avoid FPs deriving from binaries that as particular common structures like Delphi/VisualBasic ones..</p>
+<p>again Great Work Thomas <img draggable="false" class="emoji" alt="🙂" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/1f642.svg" scale="0"></p>
+<p>Regards,<br>
+Giuseppe ‘Evilcry’ Bonfa’</p>
+</li><!-- #comment-## -->
+			<li class="pingback even thread-odd thread-alt depth-1 highlander-comment" id="comment-1584">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/2605362a8f2300e201b45ec8763ef935" class="avatar avatar-32" height="32" width="32" originals="32" src-orig="https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=32" scale="2">			<cite><a href="https://blog.zynamics.com/2010/08/13/privatesigs/" rel="external nofollow" class="url">Challenging conventional wisdom on AV signatures (Part 2 of 2) « blog.zynamics.com</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-1584" title="">2010-08-16 at 08:01</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=1584#respond" onclick="return addComment.moveForm( &quot;comment-1584&quot;, &quot;1584&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Challenging conventional wisdom on AV signatures (Part 2 of 2) « blog.zynamics.com">Reply</a> </small>
+
+			<p>[…] investigate this, we have to remember another blog post where I described some of our results on generating “smart” signatures (this appears to […]</p>
+</li><!-- #comment-## -->
+			<li class="pingback odd alt thread-even depth-1 highlander-comment" id="comment-2399">
+			<img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/2605362a8f2300e201b45ec8763ef935" class="avatar avatar-32" height="32" width="32" originals="32" src-orig="https://secure.gravatar.com/blavatar/2605362a8f2300e201b45ec8763ef935?s=32" scale="2">			<cite><a href="https://blog.zynamics.com/2011/01/27/memoryze-vxclass-vs-zeus/" rel="external nofollow" class="url">Memoryze + VxClass vs Zeus « blog.zynamics.com</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-2399" title="">2011-02-02 at 22:00</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=2399#respond" onclick="return addComment.moveForm( &quot;comment-2399&quot;, &quot;2399&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to Memoryze + VxClass vs Zeus « blog.zynamics.com">Reply</a> </small>
+
+			<p>[…] blogged about VxClass and our algorithms for automated generation of byte signatures&nbsp;here and&nbsp;here and&nbsp;here. I have also blogged about private signatures beforehand, a concept that I think has […]</p>
+</li><!-- #comment-## -->
+			<li class="trackback even thread-odd thread-alt depth-1 highlander-comment" id="comment-2852">
+						<cite><a href="http://www.lucrari-de-licenta.com/abuzul-de-incredere-infractiune-contra-patrimoniului" rel="external nofollow" class="url">lucrari de diploma</a></cite> Says:						<br>
+
+			<small class="commentmetadata"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-2852" title="">2011-10-03 at 20:52</a> | <a rel="nofollow" class="comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/?replytocom=2852#respond" onclick="return addComment.moveForm( &quot;comment-2852&quot;, &quot;2852&quot;, &quot;respond&quot;, &quot;307&quot; )" aria-label="Reply to lucrari de diploma">Reply</a> </small>
+
+			<p><strong>lucrari de dizertatie…</strong></p>
+<p>[…]Automating AV signature generation « blog.zynamics.com[…]…</p>
+</li><!-- #comment-## -->
+	</ol>
+
+	<div class="navigation">
+		<div class="alignleft"></div>
+		<div class="alignright"></div>
+	</div>
+
+
+
+				<div id="respond" class="comment-respond js">
+			<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#respond" style="display:none;">Cancel reply</a></small></h3>				<form action="https://blog.zynamics.com/wp-comments-post.php" method="post" id="commentform" class="comment-form">
+					<input type="hidden" id="highlander_comment_nonce" name="highlander_comment_nonce" value="c95703b0f3"><input type="hidden" name="_wp_http_referer" value="/2010/02/17/automating-av-signature-generation/">
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest">
+
+<div class="comment-form-field comment-textarea">
+	
+	<div id="comment-form-comment"><textarea tabindex="-1" style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px; padding: 0px; box-sizing: content-box; word-wrap: break-word; overflow: hidden; transition: none; height: 0px !important; min-height: 0px !important; font-family: Arial, Helvetica, Tahoma, Verdana, sans-serif; font-size: 14px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; text-decoration: none; word-spacing: 0px; text-indent: 0px; line-height: normal; width: 478px;" class="autosizejs "></textarea><textarea id="comment" name="comment" title="Enter your comment here..." placeholder="Enter your comment here..." style="height: 36px; overflow: hidden; word-wrap: break-word; resize: none;"></textarea></div>
+</div>
+
+<div id="comment-form-identity" style="display: none;">
+
+	<div id="comment-form-nascar">
+		<p>Fill in your details below or click an icon to log in:</p>
+		<ul>
+			<li class="selected" style="display:none;">
+				<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-form-guest" id="postas-guest" title="Guest">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-form-load-service:WordPress.com" id="postas-wordpress" title="WordPress.com">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-form-load-service:Twitter" id="postas-twitter" title="Twitter">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#comment-form-load-service:Facebook" id="postas-facebook" title="Facebook">
+					<span></span>
+				</a>
+			</li>
+			<li>
+		</li></ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+<a href="https://gravatar.com/site/signup/" target="_blank">				<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/ad516503a11cd5ca435acc9bb6523536" alt="Gravatar" width="25" class="no-grav" originals="25" src-orig="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" scale="2">
+</a>			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Address never made public)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="email" value=""></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value=""></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="url" value=""></div>
+				</div>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/ad516503a11cd5ca435acc9bb6523536(1)" alt="WordPress.com Logo" width="25" class="no-grav" originals="25" scale="2">
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="wp_avatar" id="wordpress-avatar" class="comment-meta-wordpress" value="">
+				<input type="hidden" name="wp_user_id" id="wordpress-user_id" class="comment-meta-wordpress" value="">
+				<input type="hidden" name="wp_access_token" id="wordpress-access_token" class="comment-meta-wordpress" value="">
+				<p class="comment-form-posting-as pa-wordpress"><strong></strong> You are commenting using your WordPress.com account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( &#39;wordpress&#39; );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/ad516503a11cd5ca435acc9bb6523536(1)" alt="Twitter picture" width="25" class="no-grav" originals="25" scale="2">
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="">
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="">
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="">
+				<p class="comment-form-posting-as pa-twitter"><strong></strong> You are commenting using your Twitter account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( &#39;twitter&#39; );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/ad516503a11cd5ca435acc9bb6523536(1)" alt="Facebook photo" width="25" class="no-grav" originals="25" scale="2">
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="">
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="">
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="">
+				<p class="comment-form-posting-as pa-facebook"><strong></strong> You are commenting using your Facebook account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( &#39;facebook&#39; );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-googleplus" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/ad516503a11cd5ca435acc9bb6523536(1)" alt="Google+ photo" width="25" class="no-grav" originals="25" scale="2">
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="googleplus_avatar" id="googleplus-avatar" class="comment-meta-googleplus" value="">
+				<input type="hidden" name="googleplus_user_id" id="googleplus-user_id" class="comment-meta-googleplus" value="">
+				<input type="hidden" name="googleplus_access_token" id="googleplus-access_token" class="comment-meta-googleplus" value="">
+				<p class="comment-form-posting-as pa-googleplus"><strong></strong> You are commenting using your Google+ account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( &#39;googleplus&#39; );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service">
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+var highlander_expando_javascript = function(){
+	var input = document.createElement( 'input' ),
+	    comment = jQuery( '#comment' );
+
+	if ( 'placeholder' in input ) {
+		comment.attr( 'placeholder', jQuery( '.comment-textarea label' ).remove().text() );
+	}
+
+	// Expando Mode: start small, then auto-resize on first click + text length
+	jQuery( '#comment-form-identity' ).hide();
+	jQuery( '#comment-form-subscribe' ).hide();
+	jQuery( '#commentform .form-submit' ).hide();
+
+	comment.css( { 'height':'10px' } ).one( 'focus', function() {
+		var timer = setInterval( HighlanderComments.resizeCallback, 10 )
+		jQuery( this ).animate( { 'height': HighlanderComments.initialHeight } ).delay( 100 ).queue( function(n) { clearInterval( timer ); HighlanderComments.resizeCallback(); n(); } );
+		jQuery( '#comment-form-identity' ).slideDown();
+		jQuery( '#comment-form-subscribe' ).slideDown();
+		jQuery( '#commentform .form-submit' ).slideDown();
+	});
+}
+jQuery(document).ready( highlander_expando_javascript );
+</script>
+
+<div id="comment-form-subscribe" style="display: none;">
+	<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;"> <label class="subscribe-label" id="subscribe-label" for="subscribe" style="display: inline;">Notify me of new comments via email.</label></p><p class="post-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto;"> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog" style="display: inline;">Notify me of new posts via email.</label></p></div>
+
+
+
+
+<p class="form-submit" style="display: none;"><input name="submit" type="submit" id="comment-submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="307" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="d454b534ac"></p>
+<input type="hidden" name="genseq" value="1486710877">
+<p style="display: none;"></p>				<input type="hidden" id="ak_js" name="ak_js" value="1486710878713"></form>
+					</div><!-- #respond -->
+		<div style="clear: both"></div>
+
+	
+	</div>
+
+
+<hr>
+<div id="footer">
+	<p>
+		 <a href="https://wordpress.com/?ref=footer_blog">Blog at WordPress.com.</a>
+		<br><a href="https://blog.zynamics.com/feed/">Entries (RSS)</a> and <a href="https://blog.zynamics.com/comments/feed/">Comments (RSS)</a>.	</p>
+</div>
+</div>
+
+<!--  -->
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/gprofiles.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/wpgroho.js"></script>
+
+	<script>
+		//initialize and attach hovercards to all gravatars
+		jQuery( document ).ready( function( $ ) {
+
+			if (typeof Gravatar === "undefined"){
+				return;
+			}
+
+			if ( typeof Gravatar.init !== "function" ) {
+				return;
+			}			
+
+			Gravatar.profile_cb = function( hash, id ) {
+				WPGroHo.syncProfileData( hash, id );
+			};
+			Gravatar.my_hash = WPGroHo.my_hash;
+			Gravatar.init( 'body', '#wp-admin-bar-my-account' );
+		});
+	</script>
+
+		<div style="display:none">
+	<div class="grofile-hash-map-fff18c8f92e42ad51ee08c086f04ec1e">
+	</div>
+	<div class="grofile-hash-map-d7aacaadf961f528f1a6515cc14eb091">
+	</div>
+	<div class="grofile-hash-map-5c52fc400e4cdfdbecaa19228cc3df13">
+	</div>
+	<div class="grofile-hash-map-6d9681f67d85c81bf9c066a56bce93d3">
+	</div>
+	<div class="grofile-hash-map-351442aec110448dc5766e0f90860179">
+	</div>
+	<div class="grofile-hash-map-67476cb080a40b09ed240ee027d3848b">
+	</div>
+	<div class="grofile-hash-map-90ff76324865a10f441a72855c71ca32">
+	</div>
+	<div class="grofile-hash-map-a8902021770f66465986c21ee4085b34">
+	</div>
+	<div class="grofile-hash-map-74719b18747fa661bc39dcf591c09d04">
+	</div>
+	</div>
+<script type="text/javascript">
+/* <![CDATA[ */
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"https:\/\/zynamics.wordpress.com\/public.api\/connect\/?action=request","logoutURL":"https:\/\/zynamics.wordpress.com\/wp-login.php?action=logout&_wpnonce=8cbd1c0d6b","homeURL":"https:\/\/blog.zynamics.com\/","postID":"307","gravDefault":"identicon","enterACommentError":"Please enter a comment","enterEmailError":"Please enter your email address here","invalidEmailError":"Invalid email address","enterAuthorError":"Please enter your name here","gravatarFromEmail":"This picture will show whenever you leave a comment. Click to customize it.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account","comment_registration":"0","userIsLoggedIn":"","isJetpack":"0","text_direction":"ltr"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(5)"></script>
+
+	<div id="carousel-reblog-box">
+		<form action="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" name="carousel-reblog">
+			<textarea id="carousel-reblog-content" name="carousel-reblog-content" placeholder="Add your thoughts here... (optional)"></textarea>
+			<label for="carousel-reblog-to-blog-id" id="carousel-reblog-lblogid">Post to</label>
+			<select name="carousel-reblog-to-blog-id" id="carousel-reblog-to-blog-id">
+						</select>
+
+			<div class="submit">
+				<span class="canceltext"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/#" class="cancel">Cancel</a></span>
+				<input type="submit" name="carousel-reblog-submit" class="button" id="carousel-reblog-submit" value="Reblog Post">
+				<input type="hidden" id="carousel-reblog-blog-id" value="11242489">
+				<input type="hidden" id="carousel-reblog-blog-url" value="https://blog.zynamics.com">
+				<input type="hidden" id="carousel-reblog-blog-title" value="blog.zynamics.com">
+				<input type="hidden" id="carousel-reblog-post-url" value="">
+				<input type="hidden" id="carousel-reblog-post-title" value="">
+			</div>
+
+			<input type="hidden" id="_wpnonce" name="_wpnonce" value="c5ce54e5e6"><input type="hidden" name="_wp_http_referer" value="/2010/02/17/automating-av-signature-generation/">		</form>
+
+		<div class="arrow"></div>
+	</div>
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/form.js"></script>
+<link rel="stylesheet" id="all-css-0-3" href="./2010-02-17 zynamics.com - Automating AV signature generation_files/jetpack-carousel.css" type="text/css" media="all">
+<!--[if lte IE 8]>
+<link rel='stylesheet' id='jetpack-carousel-ie8fix-css'  href='https://s1.wp.com/wp-content/mu-plugins/carousel/jetpack-carousel-ie8fix.css?m=1412618825h&#038;ver=20121024' type='text/css' media='all' />
+<![endif]-->
+<script type="text/javascript">
+/* <![CDATA[ */
+var actionbardata = {"siteID":"11242489","siteName":"blog.zynamics.com","siteURL":"https:\/\/blog.zynamics.com","icon":"<img alt='' src='https:\/\/secure.gravatar.com\/blavatar\/2605362a8f2300e201b45ec8763ef935?s=50&d=https%3A%2F%2Fs1.wp.com%2Fi%2Flogo%2Fwpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/kubrick","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/zynamics.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F","themeURL":"","xhrURL":"https:\/\/blog.zynamics.com\/wp-admin\/admin-ajax.php","nonce":"79ed4b90a8","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"1dc55dbe62\" \/>","referer":"https:\/\/blog.zynamics.com\/2010\/02\/17\/automating-av-signature-generation\/","canFollow":"1","statusMessage":"","customizeLink":"https:\/\/zynamics.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fzynamics.wordpress.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F","postID":"307","shortlink":"http:\/\/wp.me\/pLaGt-4X","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/blog.zynamics.com\/307","statsLink":"https:\/\/wordpress.com\/stats\/post\/307\/blog.zynamics.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Kubrick","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in the Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"Join 42 other followers","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/zynamics.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F\">Log in now.<\/a>","stats":"Stats"}};
+/* ]]> */
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"https:\/\/blog.zynamics.com\/wp-admin\/admin-ajax.php","nonce":"6614af8b1d","display_exif":"1","display_geo":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","download_original":"View full size <span class=\"photo-size\">{0}<span class=\"photo-size-times\">\u00d7<\/span>{1}<\/span>","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","comment_registration":"0","require_name_email":"1","login_url":"https:\/\/zynamics.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F","blog_id":"11242489","local_comments_commenting_as":"<fieldset><label for=\"email\">Email (Required)<\/label> <input type=\"text\" name=\"email\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-email-field\" \/><\/fieldset><fieldset><label for=\"author\">Name (Required)<\/label> <input type=\"text\" name=\"author\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-author-field\" \/><\/fieldset><fieldset><label for=\"url\">Website<\/label> <input type=\"text\" name=\"url\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-url-field\" \/><\/fieldset>","reblog":"Reblog","reblogged":"Reblogged","reblog_add_thoughts":"Add your thoughts here... (optional)","reblogging":"Reblogging...","post_reblog":"Post Reblog","stats_query_args":"blog=11242489&v=wpcom&tz=0&user_id=0&subd=zynamics","is_public":"1","reblog_enabled":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/saved_resource(6)"></script><div id="actionbar" class="actnbr-pub-kubrick actnbr-has-follow actnbr-hidden"><ul><li class="actnbr-btn actnbr-hidden"> 			    	<a class="actnbr-action actnbr-actn-follow" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/"><svg class="gridicon gridicon__follow" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M23 16v2h-3v3h-2v-3h-3v-2h3v-3h2v3h3zM20 2v9h-4v3h-3v4H4c-1.1 0-2-.9-2-2V2h18zM8 13v-1H4v1h4zm3-3H4v1h7v-1zm0-2H4v1h7V8zm7-4H4v2h14V4z"></path></g></svg><span>Follow</span></a> 			    	<div class="actnbr-popover tip tip-top-left actnbr-notice"> 			    		<div class="tip-arrow"></div> 			    		<div class="tip-inner actnbr-follow-bubble"></div> 			    	</div> 			    </li><li class="actnbr-ellipsis actnbr-hidden"> 			  <svg class="gridicon gridicon__ellipsis" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><circle cx="5" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle></g></svg> 			  <div class="actnbr-popover tip tip-top-left actnbr-more"> 			  	<div class="tip-arrow"></div> 			  	<div class="tip-inner"> 				  <ul> 				    <li class="actnbr-sitename actnbr-hidden"><a href="https://blog.zynamics.com/"><img alt="" src="./2010-02-17 zynamics.com - Automating AV signature generation_files/2605362a8f2300e201b45ec8763ef935(1)" class="avatar avatar-50" height="50" width="50" originals="50" scale="2"> blog.zynamics.com</a></li> 				   	<li class="actnbr-folded-customize actnbr-hidden"><a href="https://zynamics.wordpress.com/wp-admin/customize.php?url=https%3A%2F%2Fzynamics.wordpress.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F"><svg class="gridicon gridicon__customize" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M2 6c0-1.505.78-3.08 2-4 0 .845.69 2 2 2 1.657 0 3 1.343 3 3 0 .386-.08.752-.212 1.09.74.594 1.476 1.19 2.19 1.81L8.9 11.98c-.62-.716-1.214-1.454-1.807-2.192C6.753 9.92 6.387 10 6 10c-2.21 0-4-1.79-4-4zm12.152 6.848l1.34-1.34c.607.304 1.283.492 2.008.492 2.485 0 4.5-2.015 4.5-4.5 0-.725-.188-1.4-.493-2.007L18 9l-2-2 3.507-3.507C18.9 3.188 18.225 3 17.5 3 15.015 3 13 5.015 13 7.5c0 .725.188 1.4.493 2.007L3 20l2 2 6.848-6.848c1.885 1.928 3.874 3.753 5.977 5.45l1.425 1.148 1.5-1.5-1.15-1.425c-1.695-2.103-3.52-4.092-5.448-5.977z" data-reactid=".2.1.1:0.1b.0"></path></g></svg><span>Customize<span></span></span></a></li> 				    <li class="actnbr-folded-follow actnbr-hidden"><a class="actnbr-action actnbr-actn-follow" href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/"><svg class="gridicon gridicon__follow" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M23 16v2h-3v3h-2v-3h-3v-2h3v-3h2v3h3zM20 2v9h-4v3h-3v4H4c-1.1 0-2-.9-2-2V2h18zM8 13v-1H4v1h4zm3-3H4v1h7v-1zm0-2H4v1h7V8zm7-4H4v2h14V4z"></path></g></svg><span>Follow</span></a></li> 						<li class="actnbr-signup actnbr-hidden"><a href="https://wordpress.com/start/">Sign up</a></li> 				    <li class="actnbr-login actnbr-hidden"><a href="https://zynamics.wordpress.com/wp-login.php?redirect_to=https%3A%2F%2Fblog.zynamics.com%2F2010%2F02%2F17%2Fautomating-av-signature-generation%2F">Log in</a></li> 				     				    <li class="actnbr-shortlink actnbr-hidden"><a href="http://wp.me/pLaGt-4X">Copy shortlink</a></li> 				    <li class="flb-report actnbr-hidden"><a href="http://en.wordpress.com/abuse/">Report this content</a></li> 				     				     				    <li class="actnbr-subs actnbr-hidden"><a href="https://subscribe.wordpress.com/">Manage subscriptions</a></li> 				    <li class="actnbr-fold actnbr-hidden"><a href="https://blog.zynamics.com/2010/02/17/automating-av-signature-generation/">Collapse this bar</a></li> 			      </ul> 			    </div> 		      </div> 		    </li> 	      </ul></div>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script>		<iframe src="./2010-02-17 zynamics.com - Automating AV signature generation_files/master.html" scrolling="no" id="likes-master" name="likes-master" style="display:none;"></iframe>
+		<div id="likes-other-gravatars"><div class="likes-text"><span>%d</span> bloggers like this:</div><ul class="wpl-avatars sd-like-gravatars"></ul></div>
+		<script>
+			var _comscore = _comscore || [];
+			_comscore.push({
+				c1: "2",
+				c2: "7518284"
+			});
+			(function() {
+				var s = document.createElement("script"),
+					el = document.getElementsByTagName("script")[0];
+				s.defer = true;
+				s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+				el.parentNode.insertBefore(s, el);
+			})();
+		</script>
+		<noscript>
+			&lt;p class="robots-nocontent"&gt;&lt;img src="https://sb.scorecardresearch.com/p?c1=2&amp;c2=7518284&amp;c3=&amp;c4=&amp;c5=&amp;c6=&amp;c15=&amp;cv=2.0&amp;cj=1" alt="" style="display:none;" width="1" height="1" /&gt;&lt;/p&gt;
+		</noscript><script src="./2010-02-17 zynamics.com - Automating AV signature generation_files/w.js" type="text/javascript" async="" defer=""></script>
+<script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'11242489','blog_tz':'0','user_lang':'en','blog_lang':'en','user_id':'0'}]);
+_stq.push(['view', {'blog':'11242489','v':'wpcom','tz':'0','user_id':'0','post':'307','subd':'zynamics'}]);
+_stq.push(['extra', {'crypt':'UE40eW5QN0p8M2Y/RE1TaVhzUzFMbjdWNHpwZGhTayxPSUFCMGNrd29+Smw0TDhnZmRTK0hlRi9QSGh6bi9GXVhBJWIlZlR5U1JMLU8/MkNtblkvY1dxNWNhLWwzalVzfFVyTGh2PTk1LFJjc18leWhoSDlJUHJqYmpobTNzX1tvOGk4d3Y3Yj1YRmVSRz8wMEpHJms9eC5Bcy42N2lVMFtXTTMyYWFZUFluYUxIb1NIMTVbVzRjUnRsbThhQWQ9LzU3eGhmXXdtNXlaYUhrQV8uXThyZmpOdS9Ka0JJTFMrK2MzPzdEdyxJbFQxeWRfbUtHeXpNVWN0MHxGNW1JZ2FNcVZoMEpDXzFUR1tbWzVmcVBybEF5bko5L09LQ3lpVi1xLzV1aGpE'}]);
+_stq.push([ 'clickTrackerInit', '11242489', '307' ]);
+	</script>
+<noscript>&lt;img src="https://pixel.wp.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /&gt;</noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script>
+
+<img src="./2010-02-17 zynamics.com - Automating AV signature generation_files/g.gif" alt=":)" id="wpstats" scale="0"></body></html>

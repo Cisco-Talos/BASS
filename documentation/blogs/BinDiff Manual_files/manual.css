@@ -1,0 +1,101 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url(../images/background-image.png);
+  font: small "Trebuchet MS", sans-serif;
+}
+
+.book {
+  /* Center in browser window */
+  margin: 0 auto;
+  width: 700px;
+
+  background-color: #fff;
+  border: 2px solid #8c8c8c;
+  border-top: 0 none;
+}
+
+.book .titlepage h1 {
+  margin-top: 0;
+  padding-top: 98px;
+  background: url(../images/bindiff-logo.png) top center no-repeat;
+}
+.book .titlepage h1 a {
+  display: block;
+  margin: 0;
+  padding: 1em 15px 0;
+  border-top: 1px solid #8c8c8c;
+}
+.book .titlepage hr {
+  /* Remove horizontal rule */
+  display: none;
+}
+
+.book .toc, .book .chapter, .book .appendix, p.copyright, .list-of-tables {
+  padding: 0 15px;
+}
+
+h1 {
+  font-size: x-large;
+  color: #c77;
+}
+h2 {
+  font-size: x-large;
+  color: #c77;
+}
+h3 {
+  font-size: large;
+  color: #c77;
+}
+h4 {
+  font-size: medium;
+  color: #c77;
+  margin-bottom: 0;
+}
+
+.section h2.title {
+  font-size: large;
+}
+
+a.email, a.link, a.xref, .toc span a, .qandaset a, .list-of-tables a {
+  color: #c55;
+  text-decoration: underline;
+}
+a.email:hover, a.link:hover, a.xref:hover, .toc span a:hover,
+.qandaset a:hover {
+  color: #9c9;
+  text-decoration: none;
+}
+
+.mediaobject {
+  text-align: center;
+}
+
+.keycap {
+  color: #222;
+  font: bold 9pt arial;
+  text-decoration: none;
+  text-align: center;
+  padding: 2px;
+  margin: 0 2px;
+  background: #EFF0F2;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-top: 1px solid whiteSmoke;
+  -webkit-box-shadow: inset 0 0 25px #e8e8e8, 0 1px 0 #c3c3c3, 0 2px 0 #c9c9c9, 0 2px 3px #333;
+  -moz-box-shadow: inset 0 0 25px #e8e8e8, 0 1px 0 #c3c3c3, 0 2px 0 #c9c9c9, 0 2px 3px #333;
+  box-shadow: inset 0 0 25px #e8e8e8, 0 1px 0 #c3c3c3, 0 2px 0 #c9c9c9, 0 2px 3px #333;
+  text-shadow: 0px 1px 0px whiteSmoke;
+}
+
+.command {
+  font-family: monospace;
+}
+
+.guilabel {
+  font-weight: bold;
+}

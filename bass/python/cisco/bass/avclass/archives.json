@@ -1,0 +1,11 @@
+{
+    "application/zip" : "Compress",
+    "application/x-gzip" : "Compress",
+    "application/x-bzip2" : "Compress",
+    "application/x-lzip" : "Compress",
+    "application/x-lrzip" : "Compress",
+    "application/x-compress" : "Compress",
+    "application/x-7z-compressed" : "Compress",
+    "application/vnd.ms-cab-compressed" : "Compress"
+}
+

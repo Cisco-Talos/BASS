@@ -1,0 +1,15 @@
+from cisco.bass.algorithms import lcs
+from cisco.bass.algorithms import hamming_klcs
+
+def test_lcs():
+    a = "vCyuyFjhK5lKOAMFzt2D3vF0kd5deNQqiXEAAGlVsFSGB8NtG9kou2fpOFoyIMS7r0b3L1xtE3fVYgfpcBt3HGGg4uJIkoX67B5BbkMCvVEcNalxzIzX7ad2Yn66nNbTJd3pprG6glEdYp7OWgOSFQX2yQp0Q6AdwozWOjv6nCa3LDIiryEFpun8QZiyakJJ9mW2BeNk"
+    b = "D50cSnvaoMSgSMa2IxDalzvljAMZI8eP2s6ZsGcpiAd3CxiiRua6mMetHhEeybp3N4Fvy24Ni8lX19uRSu5HHOeXQckvMb1lSuiJuUgDnpgF37mzxnd2HQIwAaxbtISeq2wSXXt0KBUbY78M6FSitsXM3OEPgA7BGWknRMfRl3pm5vdPIkaPPfDHnA7HShn0qrZ29DHg"
+    common = lcs(a, b)
+    assert(common == "5M2Dvl82p3xtEp34vNlXbJgpgF2Q06AWn3pnZ2")
+
+def test_hamming_klcs():
+    a = "vCyuyFjhK5lKOAMFzt2D3vF0kd5deNQqiXEAAGlVsFSGB8NtG9kou2fpOFoyIMS7r0b3L1xtE3fVYgfpcBt3HGGg4uJIkoX67B5BbkMCvVEcNalxzIzX7ad2Yn66nNbTJd3pprG6glEdYp7OWgOSFQX2yQp0Q6AdwozWOjv6nCa3LDIiryEFpun8QZiyakJJ9mW2BeNk"
+    b = "D50cSnvaoMSgSMa2IxDalzvljAMZI8eP2s6ZsGcpiAd3CxiiRua6mMetHhEeybp3N4Fvy24Ni8lX19uRSu5HHOeXQckvMb1lSuiJuUgDnpgF37mzxnd2HQIwAaxbtISeq2wSXXt0KBUbY78M6FSitsXM3OEPgA7BGWknRMfRl3pm5vdPIkaPPfDHnA7HShn0qrZ29DHg"
+    c = "bIpMXSNIbcWYHWYb6XslfSrIAgUdSu2BRxDYLlFliMDVXre9Va6323Zw02MNRtwNucEEaXr1g8ToiikeahQFAYV9N7RsA1Xmezd5VnfIt3VnevpG3EF6ND18tbeKpnXP97feNapRRTBnhJuEiKk123ePmT7sRw5e2IeNlO2qqBGgI1p3T5PY0hSjP0iLQyLWqTwKlPc0"
+    common = hamming_klcs([a, b, c])
+    assert(common == "MNXSuM1gp3X73gW")

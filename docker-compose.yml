@@ -1,0 +1,22 @@
+version: '2'
+services:
+    bindiff:
+        build: bindiff/
+        volumes:
+            - bindiff_volume:/shared
+        expose:
+            - "80"
+    bass:
+        build: bass/
+        volumes:
+            - bindiff_volume:/bindiff
+            - /tmp/bass_logs:/logs
+        ports:
+            - "5000:5000"
+        environment:
+            - VIRUSTOTAL_API_KEY
+            
+
+volumes:
+    bindiff_volume:
+        

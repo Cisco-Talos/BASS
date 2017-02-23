@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)https://www.zynamics.com/bindiff/manual/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>BinDiff Manual</title>
+  <link href="./BinDiff Manual_files/manual.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="book">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h1 class="title"><a id="N2000B" name="N2000B"></a>
+          <span class="application">BinDiff</span> Manual</h1>
+        </div>
+
+        <div>
+          <p class="copyright">Copyright ©2010-2015 Google Inc.
+          All rights reserved.</p>
+        </div>
+
+        <div>
+          <p class="copyright">Copyright ©2004-2011 zynamics GmbH.
+          All rights reserved.</p>
+        </div>
+      </div>
+      <hr>
+    </div>
+
+    <div class="toc">
+      <p><b>Table of Contents</b></p>
+
+      <dl>
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#N2002A">1.
+        Introduction</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2004E">Conventions
+            used in this document</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2008A">Changes</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#NYYYY1">New in
+                Version 4.2</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#NYYYY0">New in
+                Version 4.1</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2008F">New in
+                Version 4.0</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N200D1">New in
+                Version 3.2</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N200E3">New in
+                Version 3.0</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20101">New in
+                Version 2.1</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2011F">New in
+                Version 2.0</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2012E">New in
+                Version 1.8</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20140">New in
+                Version 1.6</a></span></dt>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#N201AE">2.
+        Installation</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N201B6">Required
+            Version of IDA</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N201C2">Microsoft
+            Windows</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2022D">How to
+                uninstall</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20240">GNU/Linux</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20245">Distribution Support</a></span></dt>
+
+                <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2026F">Installation</a></span></dt>
+              </dl>
+            </dd>
+
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#chapUnderstanding">3.
+        Understanding BinDiff</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20367">General
+            Matching Strategy</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2038E">Function
+            Matching</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20496">Basic Block
+            Matching</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2057A">Confidence/Similarity</a></span></dt>
+
+            <dt><span class="bibliography"><a href="https://www.zynamics.com/bindiff/manual/#N205C8">Recommended reading</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#chapCoreFunc">4. Core
+        Functionality</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20676">The BinDiff
+            Plugin for IDA</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2070F">The
+            Unmatched Functions Subviews</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#sectMatchedFunctions">The Matched Functions
+            Subview</a></span></dt>
+
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20892">Function
+            Flowgraphs</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#chapConfiguration">5.
+        Configuration</a></span></dt>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#chapWalkthrough">6. A
+        basic walk-through Analyzing a Microsoft
+        Patch</a></span></dt>
+
+        <dt><span class="chapter"><a href="https://www.zynamics.com/bindiff/manual/#chapAdvanced">7.
+        Advanced Usage</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20AB6">Porting
+            Comments and Symbols using BinDiff</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="appendix"><a href="https://www.zynamics.com/bindiff/manual/#N20B11">A. Questions
+        and Answers</a></span></dt>
+      </dl>
+    </div>
+
+    <div class="list-of-tables">
+      <p><b>List of Tables</b></p>
+
+      <dl>
+        <dt>5.1. <a href="https://www.zynamics.com/bindiff/manual/#ex.calstable">Location of BinDiff
+        configuration files</a></dt>
+      </dl>
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="N2002A" name="N2002A"></a>Chapter&nbsp;1.&nbsp;Introduction</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+
+        <dl>
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2004E">Conventions
+          used in this document</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2008A">Changes</a></span></dt>
+
+          <dd>
+            <dl>
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#NYYYY1">New in
+              Version 4.2</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#NYYYY0">New in
+              Version 4.1</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2008F">New in
+              Version 4.0</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N200D1">New in
+              Version 3.2</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N200E3">New in
+              Version 3.0</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20101">New in
+              Version 2.1</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2011F">New in
+              Version 2.0</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2012E">New in
+              Version 1.8</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20140">New in
+              Version 1.6</a></span></dt>
+            </dl>
+          </dd>
+        </dl>
+      </div>
+
+      <p>Thank you for purchasing <span class="application">BinDiff</span>, the leading
+      executable-comparison tool for reverse engineers that need to
+      analyze patches, malware variants, or are generally
+      interested in the differences between two executables. This
+      manual is intended to help you to get up to speed
+      quickly.</p>
+
+      <p>In order to make best use of BinDiff, it is very helpful
+      to spend a bit of time familiarizing yourself with the
+      concepts and algorithms behind <span class="application">BinDiff</span>. For this, we recommend
+      reading <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapUnderstanding" title="Chapter 3. Understanding BinDiff">Chapter&nbsp;3,
+      <i>Understanding BinDiff</i></a>, which explains the
+      behind-the-scenes, <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapCoreFunc" title="Chapter 4. Core Functionality">Chapter&nbsp;4,
+      <i>Core Functionality</i></a>, which explains the basic
+      elements of the user interface. Ideally, we would like you to
+      also read <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapWalkthrough" title="Chapter 6. A basic walk-through Analyzing a Microsoft Patch">
+      Chapter&nbsp;6, <i>A basic walk-through Analyzing a Microsoft
+      Patch</i></a> (a walkthrough through analyzing a simple
+      security update) and <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapAdvanced" title="Chapter 7. Advanced Usage">Chapter&nbsp;7,
+      <i>Advanced Usage</i></a> (a walk-through through porting
+      your symbols and comments from one disassembly to the next).
+      Don't worry - after <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapUnderstanding" title="Chapter 3. Understanding BinDiff">Chapter&nbsp;3,
+      <i>Understanding BinDiff</i></a>, there's not a lot of text
+      to parse and mostly screenshots to look at.</p>
+
+      <p>We hope that you have a great experience using our
+      product!</p>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N2004E" name="N2004E"></a>Conventions used in this document</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>The following typographical conventions are used in this
+        document:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term"><span class="emphasis"><em>Italic</em></span></span></dt>
+
+            <dd>Used for new terms, URLs, email addresses as well
+            as the name of commands and utilities.</dd>
+
+            <dt><span class="term"><code class="code">Constant
+            width</code></span></dt>
+
+            <dd>Indicates elements of code, configuration options,
+            variables and their values, functions, modules the
+            contents of files, or the output from commands.</dd>
+
+            <dt><span class="term"><span class="command"><strong>Constant width
+            bold</strong></span></span></dt>
+
+            <dd>Shows commands or other text that should be typed
+            literally by the user. Also used for emphasis in
+            command output.</dd>
+
+            <dt><span class="term"><em class="replaceable"><code>Constant width
+            italic</code></em></span></dt>
+
+            <dd>Shows text that should be replaced with
+            user-supplied values.</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N2008A" name="N2008A"></a>Changes</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="NYYYY1" name="NYYYY1"></a>New in Version 4.2</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Built on IDA SDK 6.8, so this is the new minimum version required</li>
+              <li>Support for AArch64 (a.k.a. ARM64)</li>
+              <li>Increase maximum export file size to 2GiB</li>
+              <li>Improvements to the core BinDiff engine</li>
+              <li>New import symbols and comments feature to mark imported comments
+                as coming from an external library</li>
+              <li>No OS X support for this version</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="NYYYY0" name="NYYYY0"></a>New in Version 4.1</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Support for IDA 6.5 or higher</li>
+              <li>Support for Windows 8 and 8.1</li>
+              <li>Support for large operand sizes used by the AVX/AVX2 instructions</li>
+              <li>Improvements to the core BinDiff engine</li>
+              <li>No OS X support for this version</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N2008F" name="N2008F"></a>New in Version 4.0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>The user interface for visual diff has been
+              rewritten</li>
+
+              <li>Call graph views</li>
+
+              <li>Proximity browsing in flowgraphs and
+              callgraphs</li>
+
+              <li>New "combined" view of flowgraphs</li>
+
+              <li>Faster graph rendering and better rendering
+              quality</li>
+
+              <li>Improved instruction match representation</li>
+
+              <li>Improved search functionality</li>
+
+              <li>IDA comments are exported</li>
+
+              <li>Selection history with undo and redo</li>
+
+              <li>Copyable basic block and function node
+              contents</li>
+
+              <li>Multi-tab layout</li>
+
+              <li>Organize multiple diffs in workspaces</li>
+
+              <li>New exporter format based on Google Protocol
+              Buffers</li>
+
+              <li>Incremental diffing - manually confirm matches
+              that will be kept in another diff iteration while
+              reassiging others, allows to iteratively improve the
+              result</li>
+
+              <li>Auto-generated comments no longer get ported</li>
+
+              <li>New column in <span class="guilabel">Matched
+              functions</span> table allows to keep track of one's
+              progress for comment porting</li>
+
+              <li>Support for the Dalvik architecture (used by
+              Android)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N200D1" name="N200D1"></a>New in Version 3.2</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Mac OS X support</li>
+
+              <li>Support for IDA Pro 6.0 or higher (version 3.2.2
+              adds support for IDA Pro 6.2)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N200E3" name="N200E3"></a>New in Version 3.0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Big change: New internal diff engine that
+              produces more detailed and more accurate results</li>
+
+              <li>Fixed an edge-layout bug that led to improperly
+              connected basic blocks</li>
+
+              <li>Improved HTML report generation</li>
+
+              <li>Removed configuration dialog from IDA plugin. The
+              plugin configuration can be changed via its XML-based
+              configuration file</li>
+
+              <li>Added menu items to IDA to allow for a global
+              hotkey and fast access to subviews</li>
+
+              <li>New statistics subview</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N20101" name="N20101"></a>New in Version 2.1</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Linux version of the BinDiff Plugin for IDA (to
+              be downloaded separately)</li>
+
+              <li>Windows only: Removed dependency on Windows
+              registry, configuration data is now stored in plain
+              XML files</li>
+
+              <li>Compatibility with Windows Vista: BinDiff Plugin
+              for IDA no longer writes to the IDA directory
+              anymore</li>
+
+              <li>Updated Documentation in XHTML format</li>
+
+              <li>Improved installation experience using Windows
+              Installer</li>
+
+              <li>Bugfix: Labelled addresses are now properly
+              displayed</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N2011F" name="N2011F"></a>New in Version 2.0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>First version with an external Java based
+              graphical user interface</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N2012E" name="N2012E"></a>New in Version 1.8</h3>
+              </div>
+            </div>
+          </div>
+
+          <p>We have added two significant new features to zynamics
+          BinDiff:</p>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>HTML output generation. zynamics BinDiff 1.8 can
+              now generate an HTML file summarizing the changes
+              detected and providing detailed information on
+              changes to the call graph and ambiguous
+              situations.</li>
+
+              <li>Edge-Vector matching. zynamics BinDiff 1.8
+              features a new algorithm for generating initial
+              fixedpoints, leading to a significant reduction in
+              diffing time on larger disassemblies (several
+              thousand functions) where no symbols are
+              available.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N20140" name="N20140"></a>New in Version 1.6</h3>
+              </div>
+            </div>
+          </div>
+
+          <p>Many changes have occured between versions 1.5 and
+          1.6, some very visible, others revolving around the core
+          functionality.</p>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>
+                <p>New methods to generate initial fixedpoints:</p>
+
+                <div class="variablelist">
+                  <dl>
+                    <dt><span class="term">String
+                    matching</span></dt>
+
+                    <dd>Creates fixedpoints from functions that
+                    reference identical strings</dd>
+
+                    <dt><span class="term">Recursive function
+                    matching</span></dt>
+
+                    <dd>Creates fixedpoints from functions that
+                    call themselves</dd>
+
+                    <dt><span class="term">Prime
+                    Products</span></dt>
+
+                    <dd>Fixedpoints are created for functions that
+                    contain the same instructions in identical
+                    quantities (but not necessarily in the same
+                    order)</dd>
+                  </dl>
+                </div>
+              </li>
+
+              <li>Initial fixedpoints by name now ignores
+              “<span class="quote">unknown_libnames</span>” and
+              similar categories of functions</li>
+
+              <li>New isomorphism algorithm for function-level
+              diffing</li>
+
+              <li>New visualization option for visual diff color
+              corresponding nodes in identical colors</li>
+
+              <li>New CPU-independent instruction-level isomorphism
+              algorithm</li>
+
+              <li>New comment porting algorithm based on the above;
+              currently ports:
+
+                <div class="itemizedlist">
+                  <ul>
+                    <li>Local labels</li>
+
+                    <li>Anterior/posterior comments</li>
+
+                    <li>Regular and repeatable comments</li>
+
+                    <li>Regular and repeatable function
+                    comments</li>
+
+                    <li>Operand to standard enum member</li>
+                  </ul>
+                </div>
+              </li>
+
+              <li>Added processor: SPARC</li>
+
+              <li>
+                <p>New fully CPU-independent mode for not
+                explicitly supported processors (used by default if
+                the CPU is not supported). This means that
+                <span class="emphasis"><em>all</em></span> CPUs
+                that IDA supports are supported using this default
+                mode. However, CPUs with conditional execution
+                (IA64, ARM) may yield suboptimal results.</p>
+
+                <p>Please contact <code class="email">&lt;<a class="email" href="mailto:zynamics-support@google.com">zynamics-support@google.com</a>&gt;</code>
+                to let us know of any processors that you would
+                like to have explicit support for, as using
+                explicitly supported CPUs result in higher-quality
+                matches.</p>
+              </li>
+
+              <li>Added temp directory for sane storage of all
+              temporary graphs.</li>
+
+              <li>Option to color functions identified as changed
+              within the database. Functions colored with this
+              option will be colored in any graphs created by the
+              user through IDA's graphing facilities.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="N201AE" name="N201AE"></a>Chapter&nbsp;2.&nbsp;Installation</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+
+        <dl>
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N201B6">Required
+          Version of IDA</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N201C2">Microsoft
+          Windows</a></span></dt>
+
+          <dd>
+            <dl>
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2022D">How to
+              uninstall</a></span></dt>
+            </dl>
+          </dd>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20240">GNU/Linux</a></span></dt>
+
+          <dd>
+            <dl>
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20245">Distribution Support</a></span></dt>
+
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2026F">Installation</a></span></dt>
+            </dl>
+          </dd>
+
+          <dd>
+            <dl>
+              <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20329">How to
+              uninstall</a></span></dt>
+            </dl>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N201B6" name="N201B6"></a>Required Version of IDA</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>Since <span class="application">BinDiff</span>
+        is an add-on product to IDA, it requires a working
+        installation of Hex-Rays IDA Pro version 6.8 or above.
+        Please note that support for legacy versions of IDA Pro has
+        been discontinued.</p>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N201C2" name="N201C2"></a>Microsoft Windows</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>To install <span class="application">
+        BinDiff</span> to your workstation, perform the following
+        steps:</p>
+
+        <div class="orderedlist">
+          <ol>
+            <li>Download the Windows installation package from the
+            location given in the order confirmation email.</li>
+
+            <li>Double-click the downloaded installation package to
+            start the Setup Wizard. Note that the user installing
+            the package will need administrative privileges to
+            perform the installation.</li>
+
+            <li>
+              <p>On the initial Welcome page, click <span class="guibutton">Next</span>. You are asked to read and
+              confirm the zynamics BinDiff License Agreement.</p>
+
+              <p>To accept the License Agreement, check
+              <span class="guilabel">I accept the terms in the
+              License Agreement</span> and click <span class="guibutton">Next</span>.</p>
+            </li>
+
+            <li>
+              <p>On the <span class="guilabel">Custom Setup</span>
+              page, you can select the features you want to
+              install. By default, all product features will be
+              installed. You can remove a feature by clicking the
+              icon next to it and select <span class="guimenuitem">Entire feature will be
+              unavailable</span>. This way you can remove support
+              for 64-bit addresses, the User Manual and the
+              included sample files.</p>
+
+              <p>To change the location where <span class="application">BinDiff</span> gets installed,
+              select <span class="guilabel">BinDiff</span>
+              and click the <span class="guibutton">Browse</span>
+              button. The <span class="guilabel">Change destination
+              folder</span> dialog appears, allowing you to enter a
+              custom installation path. Click <span class="guibutton">OK</span> to confirm your choice and
+              close the dialog.</p>
+
+              <p>Once you are done customizing Setup, click
+              <span class="guibutton">Next</span>.</p>
+            </li>
+
+            <li>You are asked to provide the full path to your
+            installation of Hex-Rays IDA Pro. If Setup was able to
+            detect an installation of IDA, its directory is already
+            set as a default. To manually browse for the IDA
+            directory, click <span class="guibutton">Browse</span>
+            .</li>
+
+            <li>Click <span class="guibutton">Next</span> and then
+            <span class="guibutton">Install</span> to begin the
+            installation which usually takes only a moment.</li>
+
+            <li>To close the Setup Wizard, click <span class="guibutton">Finish</span>.</li>
+          </ol>
+        </div>To verify your installation and to begin using
+        <span class="application">BinDiff</span>, open a
+        database in IDA Pro and invoke the BinDiff Plugin for IDA
+        by pressing <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span>.
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N2022D" name="N2022D"></a>How to uninstall</h3>
+              </div>
+            </div>
+          </div>
+
+          <p>Should you ever want to uninstall <span class="application">BinDiff</span> or to perform
+          maintenance, use <span class="guilabel">Add or Remove
+          Programs</span> from the Windows <span class="guilabel">Control Panel</span> as usual.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20240" name="N20240"></a>GNU/Linux</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N20245" name="N20245"></a>Distribution Support</h3>
+              </div>
+            </div>
+          </div>
+
+          <p>By default, customers of <span class="application">BinDiff</span> receive Debian
+          GNU/Linux installation packages. We also support the
+          following Linux distributions:</p>
+
+          <div class="itemizedlist">
+            <ul>
+              <li>Debian 8 (“<span class="quote">jessie</span>”)</li>
+
+              <li>Ubuntu 14.04.1 LTS (“<span class="quote">Trusty Tahr</span>”)</li>
+            </ul>
+          </div>Other/later versions will most likely work, but are
+          untested.
+
+          <p>To obtain an installation package/installation
+          instructions for a distribution other than Debian or
+          Ubuntu, please contact <code class="email">&lt;<a class="email" href="mailto:zynamics-support@google.com">zynamics-support@google.com</a>&gt;</code>.
+          The remainder of this section assumes that the
+          distribution you are installing <span class="application">BinDiff</span> on Debian GNU/Linux
+          or Ubuntu.</p>
+        </div>
+
+        <div class="section">
+          <div class="titlepage">
+            <div>
+              <div>
+                <h3 class="title"><a id="N2026F" name="N2026F"></a>Installation</h3>
+              </div>
+            </div>
+          </div>
+
+          <p>To install <span class="application">
+          BinDiff</span> to your workstation, perform the following
+          steps:</p>
+
+          <div class="orderedlist">
+            <ol>
+              <li>Download the Debian package from the location
+              given in the order confirmation email. Download <code class="filename">bindiff420-debian8-amd64.deb</code>.
+
+              </li><li>Open a shell with administrative privileges. On
+              Debian, use the <span class="command"><strong>su</strong></span> command, on
+              Ubuntu use the command <span class="command"><strong>sudo -i</strong></span>. Then
+              change the current working directory to the location
+              where you downloaded the Debian package to.</li>
+
+              <li>Type <span class="command"><strong>dpkg -i
+              bindiff420-debian8-amd64.deb</strong></span> to begin the
+              installation.</li>
+
+              <li>
+                <p>You are asked to read and confirm the zynamics
+                BinDiff License Agreement. Select <span class="guibutton">Ok</span> and press <span class="keycap"><strong>Enter</strong></span>.</p>
+
+                <p>To accept the License Agreement, select
+                <span class="guibutton">Yes</span> when presented
+                with the License Agreement question and press
+                <span class="keycap"><strong>Enter</strong></span>.</p>
+              </li>
+
+              <li>You are asked to provide the path to your
+              installation of Hex-Rays IDA Pro. Type the full path
+              and press <span class="keycap"><strong>Enter</strong></span>. The
+              recommended path is <code class="filename">/opt/ida-6.8/</code>.</li>
+            </ol>
+          </div>To verify your installation and to begin using
+          <span class="application">BinDiff</span>, open a
+          database in IDA Pro and invoke the BinDiff Plugin for IDA
+          by pressing <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span>.
+
+          <div class="section">
+            <div class="titlepage">
+              <div>
+                <div>
+                  <h4 class="title"><a id="N202C8" name="N202C8"></a>How to uninstall</h4>
+                </div>
+              </div>
+            </div>
+
+            <p>Should you ever want to uninstall <span class="application">BinDiff</span>, open an
+            administrative shell and run the command <span class="command"><strong>apt-get remove
+            bindiff</strong></span>.</p>
+          </div>
+        </div>
+      </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="chapUnderstanding" name="chapUnderstanding"></a>Chapter&nbsp;3.&nbsp;Understanding
+            BinDiff</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+
+        <dl>
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20367">General
+          Matching Strategy</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2038E">Function
+          Matching</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20496">Basic Block
+          Matching</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2057A">Confidence/Similarity</a></span></dt>
+
+          <dt><span class="bibliography"><a href="https://www.zynamics.com/bindiff/manual/#N205C8">Recommended reading</a></span></dt>
+        </dl>
+      </div>
+
+      <p>This section provides background information about the
+      inner workings of <span class="application">
+      BinDiff</span>. It is recommended reading for anyone who
+      wants to get the most out of the product, and for anyone who
+      wants to understand the details of the different
+      configuration options.</p>
+
+      <p><span class="application">BinDiff</span> works on
+      the abstract structure of an executable, ignoring the
+      concrete assembly-level instructions in the disassembly.
+      Every function gets a signature, based on the structure of
+      the (normalized) flow graph of the function. The signature
+      consists of:</p>
+
+      <div class="itemizedlist">
+        <ul>
+          <li>Number of codeblocks</li>
+
+          <li>Number of edges between codeblocks</li>
+
+          <li>Number of calls to subfunctions</li>
+        </ul>
+      </div>
+
+      <p>Once the two sets of signatures (for the two executables)
+      have been generated, <span class="emphasis"><em>initial</em></span> matches are created. This
+      works by selecting a subset of all functions in each
+      executable which share a common characteristic. A match is
+      created if a signature occurs once (and only once) in both
+      examined subsets of signatures.</p>
+
+      <p>After this step, callgraphs (graphs which contain
+      information about the calls-to relations between functions)
+      are used to generate more matches: If a match is known, the
+      subsets of all functions called from a matched function are
+      examined. These subsets are significantly smaller than the
+      set of all functions, thus the propability for finding new
+      unique matches is a lot higher. This process is repeated
+      until no new matches can be found.</p>
+
+      <p>This means that after you have successfully run
+      <span class="application">BinDiff</span>, you have a
+      list of functions that were successfully associated with each
+      other, as well as two lists of functions that could not be
+      associated.</p>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20367" name="N20367"></a>General Matching Strategy</h2>
+            </div>
+          </div>
+        </div>
+
+        <p><span class="application">BinDiff</span> has a
+        list of function attributes (see below) suitable for
+        generating matches. It starts on a global level,
+        considering all functions of the binary and calculates the
+        first attribute for every function. There are several
+        possible outcomes:</p>
+
+        <div class="orderedlist">
+          <ol>
+            <li>An attribute is unique in both binaries. The
+            function is matched.</li>
+
+            <li>An attribute appears several times in both binaries
+            - the matching is ambiguous. <span class="application">BinDiff</span> proceeds with a
+            "drill down" step, only considering the equivalent sets
+            of functions for that attribute. Drilling down means
+            trying the next best attribute until we either run out
+            of algorithms, match functions uniquely or the set
+            dissolves because an attribute does not match any of
+            its functions.</li>
+
+            <li>An attribute does not have a match in the other
+            binary. The function is kept in the unmatched set.</li>
+          </ol>
+        </div>
+
+        <p>After the initial global matching step the parents
+        (callers) and children (callees) of each new match are
+        considered. <span class="application">
+        BinDiff</span> tries to match functions in the set of
+        parents and children by performing a "drill down" step as
+        described above on each. Finally <span class="application">BinDiff</span> performs basic block
+        matching for all newly matched functions and matches
+        functions called from matched basic blocks (<span class="guilabel">function: call reference matching</span>). This
+        concludes global matching for a single attribute. The whole
+        process is restarted on the remaining unmatched functions
+        using the next best attribute.</p>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N2038E" name="N2038E"></a>Function Matching</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>Function attributes are used in one of two ways. Either
+        canonically per function or per edge. Edge matching tries
+        to match edges (which represent calls in the call graph or
+        jumps in the flow graphs) if source and target function
+        attributes match. Thus edge matching is the stronger
+        criterium, yielding better matches in general. However,
+        since it is possible to have a lot of edges per vertex in a
+        graph (this is especially true for callgraphs, where the
+        number of edges often grows super linearily in the number
+        of vertices) edge matching may potentially be very slow. If
+        you do encounter performance problems for certain binaries
+        you should first try to disable edge matching based
+        algorithms. Also, do not hesitate to send the offending
+        binaries to the zynamics team at Google - we are always trying to improve
+        performance bottlenecks and are grateful for samples.</p>
+
+        <p>Function matching algorithms ordered roughly by
+        resulting match quality:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term">function: hash
+            matching</span></dt>
+
+            <dd>
+              <p>Matches functions based on a hash of the original
+              raw function bytes. Thus two functions matched by
+              this algorithm should be identical on the byte
+              level.</p>
+
+              <p>match quality: very good</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: name hash
+            matching</span></dt>
+
+            <dd>
+              <p>Matches functions based on a hash of their names.
+              Only <span class="emphasis"><em>real</em></span>
+              names are considered, names which have been
+              auto-generated by the disassembler are not used. This
+              is one of the few algorithms that can match imported
+              functions, i.e. functions that do not have an actual
+              body in the binary. False matches are highly
+              unlikely.</p>
+
+              <p>match quality: very good</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: edges flowgraph MD
+            index</span></dt>
+
+            <dd>
+              <p>Matches callgraph edges based on their source and
+              target function's MD indices. Thus calls between two
+              structurally identical functions are matched.</p>
+
+              <p>match quality: very good</p>
+
+              <p>algorithm performance: medium</p>
+            </dd>
+
+            <dt><span class="term">function: edges callgraph MD
+            index</span></dt>
+
+            <dd>
+              <p>Matches callgraph edges based on their callgraph
+              MD index. This means the callgraph leading to that
+              particular call is structurally identical in both
+              binaries. Match quality depends on how deep the
+              callstack leading up to this edge is: the deeper the
+              less likely is a false match.</p>
+
+              <p>match quality: good</p>
+
+              <p>algorithm performance: medium</p>
+            </dd>
+
+            <dt><span class="term">function: MD index matching
+            (flowgraph MD index, top down),</span> <span class="term">function: MD index matching (flowgraph MD index,
+            bottom up)</span></dt>
+
+            <dd>
+              <p>Matches functions based on their structure using
+              the MD index. Since the MD index takes a topological
+              graph ordering as one of it's inputs we can
+              parametrize it by whether we sort the graph vertices
+              into levels following calls from the entrypoint (top
+              down) or callers from the exit points (bottom
+              up).</p>
+
+              <p>match quality: good</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: prime signature
+            matching</span></dt>
+
+            <dd>
+              <p>Matches functions based on their instruction prime
+              products. Each mnemonic gets assigned a unique small
+              prime number. These primes are multiplied for all
+              instructions of the function. This yields a
+              structurally invariant, instruction order
+              independent, product to be subsequently used as a
+              matching attribute.</p>
+
+              <p>match quality: good</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: MD index matching
+            (callGraph MD index, top down),</span> <span class="term">function: MD index matching (callGraph MD index,
+            bottom up)</span></dt>
+
+            <dd>
+              <p>Matches functions based on their position in the
+              callgraph. The call graph leading up to that function
+              must be structurally identical as viewed from the
+              program entrypoint (top down) or its exits (bottom
+              up).</p>
+
+              <p>match quality: good</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: edges proximity MD
+            index</span></dt>
+
+            <dd>
+              <p>Matches functions based on their local call graph
+              neighborhoods. Calls and callees are only followed
+              two levels deep as seen from the function in
+              question.</p>
+
+              <p>match quality: medium</p>
+
+              <p>algorithm performance: poor</p>
+            </dd>
+
+            <dt><span class="term">function: relaxed MD index
+            matching</span></dt>
+
+            <dd>
+              <p>Matches functions based on their relaxed MD
+              indices. The MD index is calculated without taking
+              topological order into account. This means only the
+              in-edges and out-edges in the function's local
+              neighborhood are considered.</p>
+
+              <p>match quality: medium</p>
+
+              <p>algorithm performance: medium</p>
+            </dd>
+
+            <dt><span class="term">function: address
+            sequence</span></dt>
+
+            <dd>
+              <p>Matches functions in order based on their entry
+              point addresses. This is a special matching step that
+              is especially useful during drill downs. Since it
+              would indiscriminately match all functions if not
+              further constrained there are two additional
+              requirements: first the functions in question must
+              already be equivalent according to the relaxed MD
+              index and the flow graph MD index. Second, the two
+              sets of equivalent functions in both binaries must be
+              of equal size.</p>
+
+              <p>match quality: poor</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: string
+            references</span></dt>
+
+            <dd>
+              <p>Matches functions based on their referenced string
+              data. All strings referenced from the functions in
+              question are put into a combined hash which is
+              subsequently used as the matching attribute if at
+              least one string is referenced. This is a good
+              algorithm for matching error handling code which
+              often has very little structure (and thus won't get
+              matched by the stronger algorithms) but lots of
+              references to error message strings.</p>
+
+              <p>match quality: medium</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: loop count
+            matching</span></dt>
+
+            <dd>
+              <p>Matches functions based on the number of loops.
+              Only applied if at least one loop is present.</p>
+
+              <p>match quality: poor</p>
+
+              <p>algorithm performance: very good</p>
+            </dd>
+
+            <dt><span class="term">function: call sequence
+            matching(exact),</span> <span class="term">function:
+            call sequence matching(topology),</span> <span class="term">function: call sequence
+            matching(sequence)</span></dt>
+
+            <dd>
+              <p>Special algorithm that is only used for functions
+              with matched parents (callers). The point of the call
+              at the call site is determined as a tuple:
+              topological basic block level, instruction number in
+              the basic block, address. The child function (callee)
+              is matched if basic block level and instruction
+              number match (exact), if only the basic block level
+              match (topology) or simply ordered by call site
+              address (sequence). This produces very weak matches
+              in general, but may be a good strategy if the parent
+              function was matched correctly. In that case it is
+              not unlikely that it will call functions in the same
+              order in both binaries.</p>
+
+              <p>match quality: very poor</p>
+
+              <p>algorithm performance: good</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20496" name="N20496"></a>Basic Block Matching</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>Basic block matching on flow graph level is
+        algorithmically very similar to function matching. Global
+        attribute matching is followed by drill downs and by trying
+        to match in the reduced set of parents/children of matched
+        basic blocks.</p>
+
+        <p>Basic block matching algorithms ordered roughly by
+        resulting match quality:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term">basicBlock: edges prime
+            product</span></dt>
+
+            <dd>
+              <p>Flowgraph edges are matched if source and target
+              basic block instruction prime products match. Thus
+              both basic blocks contain identical instructions,
+              potentially ordered differently.</p>
+
+              <p>match quality: very good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: hash matching (4
+            instructions minimum)</span></dt>
+
+            <dd>
+              <p>Basic blocks are matched based on a binary hash of
+              their raw bytes. Only used on basic blocks with at
+              least 4 instructions.</p>
+
+              <p>match quality: very good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: prime matching (4
+            instructions minimum)</span></dt>
+
+            <dd>
+              <p>Basic blocks are matched based on their
+              instruction prime product. Only used on basic blocks
+              with at least 4 instructions.</p>
+
+              <p>match quality: very good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: call reference
+            matching</span></dt>
+
+            <dd>
+              <p>Basic blocks are matched if they call at least one
+              function and all called functions have been
+              matched.</p>
+
+              <p>match quality: very good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: string reference
+            matching</span></dt>
+
+            <dd>
+              <p>Basic blocks are matched if they reference at
+              least one string and that string is the same in both
+              binaries.</p>
+
+              <p>match quality: very good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: edges MD index (top
+            down),</span> <span class="term">basicBlock: MD index
+            matching (top down),</span> <span class="term">basicBlock: edges MD index (bottom up),</span>
+            <span class="term">basicBlock: MD index matching
+            (bottom up),</span> <span class="term">basicBlock:
+            relaxed MD index matching</span></dt>
+
+            <dd>
+              <p>Basic blocks are matched based on their position
+              in the flowgraph.</p>
+
+              <p>match quality: good</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: prime matching (0
+            instructions minimum)</span></dt>
+
+            <dd>
+              <p>Works like the previous prime matching step but
+              with the minimum number of instructions constraint
+              lifted.</p>
+
+              <p>match quality: medium</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: edges Lengauer
+            Tarjan dominated</span></dt>
+
+            <dd>
+              <p>Matches the back edges of loops which have been
+              determined using the Lengauer-Tarjan algorithm.</p>
+
+              <p>match quality: medium</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: loop entry
+            matching</span></dt>
+
+            <dd>
+              <p>Matches basic blocks that are loop anchors, i.e.
+              targets of a back edge.</p>
+
+              <p>match quality: low</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: self loop
+            matching</span></dt>
+
+            <dd>
+              <p>Matches basic blocks that have self loops.</p>
+
+              <p>match quality: low</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: entry point
+            matching,</span> <span class="term">basicBlock: exit
+            point matching</span></dt>
+
+            <dd>
+              <p>Matches the entry/exit point basic blocks. The
+              entry point is uniquely identified by the function
+              and usually has an indegree of 0. Exit points are
+              vertices with outdegree 0.</p>
+
+              <p>match quality: low</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: instruction count
+            matching,</span> <span class="term">basicBlock: jump
+            sequence matching</span></dt>
+
+            <dd>
+              <p>Special matching steps that are only applied to
+              basic blocks that are structurally equivalent based
+              on their MD indices. Basic blocks are matched
+              according to their number of instructions or simply
+              ordered by address.</p>
+
+              <p>match quality: very low</p>
+            </dd>
+
+            <dt><span class="term">basicBlock: propagation
+            (size==1)</span></dt>
+
+            <dd>
+              <p>Special matching step of last resort. Single
+              unmatched parents/children of matched basic blocks
+              are matched - with no regard of their content.</p>
+
+              <p>match quality: very low</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N2057A" name="N2057A"></a>Confidence/Similarity</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>The confidence value displayed by <span class="application">BinDiff</span> is the average
+        algorithm confidence (match quality) used to find a
+        particular match weighted by a sigmoid squashing function.
+        The values aren't simply averaged because few single weak
+        matches in an otherwise perfectly matched function/binary
+        shouldn't drag the confidence down too much. Analogously,
+        even a few strong matches will not "rescue" a binary pair
+        matched primarily by address sequence and similarily weak
+        algorithms.</p>
+
+        <p>The similarity value for a function is a weighted sum
+        taking the following factors into account:</p>
+
+        <div class="orderedlist">
+          <ol>
+            <li>
+              <p>Weight ~25%: quota of matched flow graph edges to
+              total edges</p>
+            </li>
+
+            <li>
+              <p>Weight ~15%: quota of matched basic blocks to
+              total basic blocks</p>
+            </li>
+
+            <li>
+              <p>Weight ~10%: quota of matched instructions to
+              total instructions</p>
+            </li>
+
+            <li>
+              <p>Weight ~50%: difference in flow graph MD index</p>
+            </li>
+          </ol>
+        </div>The final similarity value is multiplied by
+        confidence - even a seemingly good match is not trustworthy
+        if produced by weak algorithms.
+
+        <p>The similarity value for the whole binary is a weighted
+        sum taking the following factors into account:</p>
+
+        <div class="orderedlist">
+          <ol>
+            <li>
+              <p>Weight ~35%: quota of matched flow graph edges to
+              total edges</p>
+            </li>
+
+            <li>
+              <p>Weight ~25%: quota of matched basic blocks to
+              total basic blocks</p>
+            </li>
+
+            <li>
+              <p>Weight ~10%: quota of matched functions to total
+              functions</p>
+            </li>
+
+            <li>
+              <p>Weight ~10%: quota of matched instructions to
+              total instructions</p>
+            </li>
+
+            <li>
+              <p>Weight ~20%: difference in call graph MD index</p>
+            </li>
+          </ol>
+        </div>Again, multiplied by confidence. Only non-library
+        functions are considered for the counts. This is to avoid
+        inflating the similarity of binaries that simply use the
+        same runtime library but are otherwise completely
+        dissimilar.
+      </div>
+
+      <div class="bibliography">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N205C8" name="N205C8"></a>Recommended reading</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>For the more technically inclined and for users that are
+        interested in in-depth information on BinDiff and IDA, the
+        following documents are worth reading:</p>
+
+        <div class="biblioentry">
+          <a id="N205D0" name="N205D0"></a>
+
+          <p><span class="authorgroup"><span class="firstname">Chris</span> <span class="surname">Eagle</span>.</span> <span class="title"><i>The
+          IDA Pro Book</i>.</span> <span class="edition">2nd
+          Edition.</span> <span class="publisher"><span class="publishername">No Starch Press.</span></span>
+          <span class="pubdate">July 2011.</span> <span class="biblioid">1-59327-289-8.</span> <span class="pagenums">672.</span></p>
+        </div>
+
+        <div class="biblioentry">
+          <a id="N205F8" name="N205F8"></a>
+
+          <p><span class="biblioset"><span class="authorgroup"><span class="firstname">Thomas</span>
+          <span class="surname">Dullien</span> and <span class="firstname">Rolf</span> <span class="surname">Rolles</span>.</span> “Graph-Based Comparison
+          of Executable Objects”. <span class="bibliomisc"><a class="link" href="http://www.zynamics.com/downloads/bindiffsstic05-1.pdf" target="">http://www.zynamics.com/downloads/bindiffsstic05-1.pdf</a>
+          .</span></span> <span class="biblioset"><span class="confgroup"><span class="conftitle">SSTIC ’05, Symposium
+          sur la Sécurité des Technologies de l’Information et des
+          Communications.</span> .</span> <span class="pubdate">2005.</span></span></p>
+        </div>
+
+        <div class="biblioentry">
+          <a id="N20634" name="N20634"></a>
+
+          <p><span class="biblioset"><span class="authorgroup"><span class="firstname">Halvar</span>
+          <span class="surname">Flake</span>.</span> “Structural
+          Comparison of Executable Objects”. <span class="bibliomisc"><a class="link" href="http://www.zynamics.com/downloads/dimva_paper2.pdf" target="">http://www.zynamics.com/downloads/dimva_paper2.pdf</a>
+          .</span> <span class="pagenums">161-173.</span></span>
+          <span class="biblioset"><span class="confgroup"><span class="conftitle">Detection of
+          Intrusions and Malware &amp; Vulnerability
+          Assessment.</span> .</span> <span class="pubdate">2004.</span> <span class="volumenum">46.</span>
+          <span class="biblioid">3-88579-375-X.</span></span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="chapCoreFunc" name="chapCoreFunc"></a>Chapter&nbsp;4.&nbsp;Core
+            Functionality</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+
+        <dl>
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20676">The BinDiff
+          Plugin for IDA</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N2070F">The Unmatched
+          Functions Subviews</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#sectMatchedFunctions">The Matched Functions
+          Subview</a></span></dt>
+
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20892">Function
+          Flowgraphs</a></span></dt>
+        </dl>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20676" name="N20676"></a>The BinDiff Plugin for IDA</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>To begin using BinDiff, start IDA, load a database and
+        press <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span> to display the plugin
+        main window.</p>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/plugin-main-dialog.png">
+
+          <div class="caption">
+            The BinDiff Plugin for IDA main window before (left)
+            and after a diff has been performed (right).
+          </div>
+        </div>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term"><span class="guibutton">Diff
+            Database</span></span></dt>
+
+            <dd>
+              <p>Browse for an IDA database and start the diffing
+              process. Can also be accessed by pressing
+              <span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>D</strong></span>
+              or using the <span class="guimenuitem">File</span>,
+              <span class="guimenuitem">Diff Database...</span>
+              menu option.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guibutton">Diff
+            Database Filtered</span></span></dt>
+
+            <dd>
+              <p>Like <span class="guibutton">Diff Database</span>,
+              but allows to select an address range to diff.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guibutton">Load
+            Results</span></span></dt>
+
+            <dd>
+              <p>Browse for a diffing result to load. This
+              functionality is also available via the <span class="guimenuitem">File</span>, <span class="guimenuitem">Load file...</span>, <span class="guimenuitem">BinDiff Results...</span> menu
+              option.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guibutton">Save
+            Results</span></span></dt>
+
+            <dd>
+              <p>Saves the result of the current diffing session to
+              be loaded later using <span class="guibutton">Load
+              Results</span>. This can also be accessed using the
+              <span class="guimenuitem">File</span>, <span class="guimenuitem">Produce file</span>, <span class="guimenuitem">Save BinDiff Results...</span> menu
+              option.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guibutton">Import
+            Symbols and Comments</span></span></dt>
+
+            <dd>
+              <p>Allows to transfer function names and/or
+              individual comments from the other database.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N2070F" name="N2070F"></a>The Unmatched Functions Subviews</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>To view functions, that were not matched during the
+        diff, use the <span class="guilabel">Primary
+        Unmatched</span> and the <span class="guilabel">Secondary
+        Unmatched</span> subviews. The first one displays functions
+        that are contained in the currently open database and were
+        not associated to any function of the diffed database,
+        while the <span class="guilabel">Secondary Unmatched</span>
+        subview contains functions that are in the diffed database
+        but were not associated to any functions in the first.</p>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/unmatched.png">
+
+          <div class="caption">
+            The unmatched functions subviews.
+          </div>
+        </div>
+
+        <p>The meaning of the columns is as follows:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term"><span class="guilabel">EA</span></span></dt>
+
+            <dd>
+              <p>The effective address of the function that is not
+              associated with any other function.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">Name</span></span></dt>
+
+            <dd>
+              <p>The name of the function that is not associated
+              with any other function.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">Basic
+            Blocks</span>, <span class="guilabel">Instructions</span>, <span class="guilabel">Edges</span></span></dt>
+
+            <dd>
+              <p>The number of code blocks, instructions and edges
+              in the flow graph in this function. These can be used
+              to identify similar functions manually.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="sectMatchedFunctions" name="sectMatchedFunctions"></a>The Matched Functions
+              Subview</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>The <span class="guilabel">Matched Functions</span>
+        subview displays the results of the diffing e.g. pairs of
+        functions that are associated with each other.</p>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/matched.png">
+
+          <div class="caption">
+            The matched functions subview.
+          </div>
+        </div>The view is sorted by descending similarity by
+        default. Lines are colored according to how similar the
+        matched functions are: greener colors indicate a high
+        similarity while red tones indicate weak matches.
+
+        <p>The columns have the following meaning:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term"><span class="guilabel">similarity</span></span></dt>
+
+            <dd>
+              <p>A value between zero and one indicating how
+              <span class="emphasis"><em>similar</em></span> two
+              matched functions are. A value of exactly one means
+              the two functions are identical (in regard to their
+              instructions, not their memory addresses). Values
+              less than one mean the function has changed parts.
+              Please note that <span class="application">
+              BinDiff</span> only considers basic blocks, edges and
+              <span class="emphasis"><em>mnemonics</em></span> for
+              calculating similarity values. In particular,
+              instructions may differ in their operands, immediate
+              values and addresses and will still be considered
+              equal if the mnemonics match.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">confidence</span></span></dt>
+
+            <dd>
+              <p>A value between zero and one indicating the
+              confidence of the similarity score. Note that this
+              value represents the calculated confidence score for
+              the matching algorithms that are enabled in the
+              configuration file. It is possible to get a high
+              similarity match with a small confidence score or
+              vice versa. This simply means that a weak algorithm
+              has found a good match or a good algorithm has found
+              a weak match.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">change</span></span></dt>
+
+            <dd>
+              <p>This column characterizes the difference between
+              the two matched functions. There can be any
+              combination of the following change types, indicated
+              by single letters:</p>
+
+              <div class="itemizedlist">
+                <ul>
+                  <li>Graph (<span class="guilabel">G</span>):
+                  there have been structural changes in the
+                  function. Either the number of basic blocks or
+                  the number of edges differs or unmatched edges
+                  exist.</li>
+
+                  <li>Instruction (<span class="guilabel">I</span>): either the number of
+                  instructions differs or at least one mnemonic has
+                  changed.</li>
+
+                  <li>Operand (<span class="guilabel">O</span>):
+                  not yet implemented</li>
+
+                  <li>Jump (<span class="guilabel">J</span>):
+                  indicates a branch inversion.</li>
+
+                  <li>Entrypoint (<span class="guilabel">E</span>):
+                  the entry point basic blocks have not been
+                  matched or are different.</li>
+
+                  <li>Loop (<span class="guilabel">L</span>): the
+                  number of loops has changed.</li>
+
+                  <li>Call (<span class="guilabel">C</span>): at
+                  least one of the call targets hasn't been
+                  matched.</li>
+                </ul>
+              </div>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">EA
+            primary</span>, <span class="guilabel">name
+            primary</span></span></dt>
+
+            <dd>
+              <p>The effective address (EA) and the name of the
+              function in the currently open IDA database.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">EA
+            secondary</span>, <span class="guilabel">name
+            secondary</span></span></dt>
+
+            <dd>
+              <p>The effective address (EA) and the name of the
+              function in the foreign (secondary) database.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">algorithm</span></span></dt>
+
+            <dd>
+              <p>The algorithm that led to the match. For a list of
+              algorithms in this version of BinDiff, refer to
+              <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapUnderstanding" title="Chapter 3. Understanding BinDiff">Chapter&nbsp;3,
+              <i>Understanding BinDiff</i></a> and <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapConfiguration" title="Chapter 5. Configuration">Chapter&nbsp;5,
+              <i>Configuration</i></a> .</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">matched
+            basic blocks</span>, <span class="guilabel">basic
+            blocks primary</span>, <span class="guilabel">basic
+            blocks secondary</span></span></dt>
+
+            <dd>
+              <p>Number of total matched basic blocks per function,
+              total number of basic blocks in the first (primary)
+              function and total number of basic blocks in the
+              second function.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">matched
+            instructions</span>, <span class="guilabel">instructions primary</span>, <span class="guilabel">instructions secondary</span></span></dt>
+
+            <dd>
+              <p>Like the above, but totalling instructions instead
+              of basic blocks.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guilabel">matched
+            edges</span>, <span class="guilabel">edges
+            primary</span>, <span class="guilabel">edges
+            secondary</span></span></dt>
+
+            <dd>
+              <p>These three value describe the total of the
+              matched control flow graph edges, as well as the
+              number of the edges in the control flow graph of the
+              primary and secondary functions.</p>
+            </dd>
+          </dl>
+        </div>
+
+        <p>Right-clicking on one of the matched functions brings up
+        a context menu:</p>
+
+        <div class="variablelist">
+          <dl>
+            <dt><span class="term"><span class="guimenuitem">Import
+            Symbols and Comments</span></span></dt>
+
+            <dd>
+              <p>Transfer individual comments from the other
+              database for the selected function.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guimenuitem">View
+            Flowgraphs</span></span></dt>
+
+            <dd>
+              <p>Displays a graphical representation of the
+              differences between the selected function in the two
+              databases using the BinDiff Graphing GUI.</p>
+            </dd>
+
+            <dt><span class="term"><span class="guimenuitem">Copy</span></span></dt>
+
+            <dd>
+              <p>Copies the contents of the <span class="guilabel">Matched Functions</span> subview to the
+              system clipboard. The copied text is tabular data
+              separated by spaces.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20892" name="N20892"></a>Function Flowgraphs</h2>
+            </div>
+          </div>
+        </div>
+
+        <p><span class="application">BinDiff</span>
+        displays functions from IDA as highlighted flowgraphs with
+        colors indicating special properties of edges and code
+        blocks.</p>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/flowgraph.png">
+
+          <div class="caption">
+            A typical flowgraph.
+          </div>
+        </div>
+
+        <p>Green arrows represent conditional branches that need to
+        satisfy a certain condition to be taken, whereas red arrows
+        represent conditional branches if the branch condition is
+        not met as well as unconditional branches.</p>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="chapConfiguration" name="chapConfiguration"></a>Chapter&nbsp;5.&nbsp;Configuration</h2>
+          </div>
+        </div>
+      </div>
+
+      <p><span class="application">BinDiff</span> relies
+      on several heuristics to do its work. The behavior of the
+      program is configurable to suit your needs. This section
+      discusses the proper configuration of BinDiff.</p>
+
+      <p>If you are in a hurry to get started, just leave the
+      configuration as is, the default settings of BinDiff are
+      pre-configured for the most common use cases.</p>
+
+      <p>If you encounter performance problems with the differ,
+      would like to adapt the confidence values based on your
+      experience or want to test algorithms individually you may
+      modify the config file directly. Note that the differ needs
+      to be restarted for changes to take effect (restart IDA).</p>
+
+      <div class="table">
+        <a id="ex.calstable" name="ex.calstable"></a>
+
+        <p class="title"><b>Table&nbsp;5.1.&nbsp;Location of
+        BinDiff configuration files</b></p>
+
+        <div class="table-contents">
+          <table summary="Location of BinDiff configuration files" border="1">
+            <colgroup>
+              <col>
+              <col>
+            </colgroup>
+
+            <thead>
+              <tr>
+                <th style="text-align: left">Platform</th>
+
+                <th style="text-align: left">Location</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td style="text-align: left">Windows</td>
+
+                <td style="text-align: left"><code class="filename">%APPDATA%\zynamics\BinDiff\bindiff.xml</code></td>
+              </tr>
+
+              <tr>
+                <td style="text-align: left">Linux</td>
+
+                <td style="text-align: left"><code class="filename">~/.zynamics/BinDiff/bindiff.xml</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><br class="table-break">
+
+      <p>The following configuration options are available:</p>
+
+      <div class="variablelist">
+        <dl>
+          <dt><span class="term">Gui</span></dt>
+
+          <dd>
+            <div class="variablelist">
+              <dl>
+                <dt><span class="term">directory</span></dt>
+
+                <dd>
+                  <p>Path to the BinDiff installation
+                  directory.</p>
+
+                  <p>Default value (Windows): <span class="emphasis"><em>(BinDiff installation
+                  directory)</em></span></p>
+
+                  <p>Default value (Linux): <span class="emphasis"><em>n/a</em></span></p>
+                </dd>
+
+                <dt><span class="term">server</span></dt>
+
+                <dd>
+                  <p>IPv4 address to use for internal IPC.</p>
+
+                  <p>Default value: 127.0.0.1</p>
+                </dd>
+
+                <dt><span class="term">port</span></dt>
+
+                <dd>
+                  <p>IPv4 port to use for internal IPC.</p>
+
+                  <p>Default value: 2000</p>
+                </dd>
+
+                <dt><span class="term">retries</span></dt>
+
+                <dd>
+                  <p>Reserved, do not use.</p>
+
+                  <p>Default value: 20</p>
+                </dd>
+              </dl>
+            </div>
+          </dd>
+
+          <dt><span class="term">Ida</span></dt>
+
+          <dd>
+            <div class="variablelist">
+              <dl>
+                <dt><span class="term">directory</span></dt>
+
+                <dd>
+                  <p>Path to the IDA Pro installation
+                  directory.</p>
+
+                  <p>Default value (Windows): <span class="emphasis"><em>(IDA Pro installation
+                  directory)</em></span></p>
+
+                  <p>Default value (Linux): <span class="emphasis"><em>n/a</em></span></p>
+                </dd>
+              </dl>
+            </div>
+          </dd>
+
+          <dt><span class="term">Threads</span></dt>
+
+          <dd>
+            <p>Reserved, do not use.</p>
+          </dd>
+
+          <dt><span class="term">FunctionMatching,</span>
+          <span class="term">BasicBlockMatching</span></dt>
+
+          <dd>
+            <p>Specified the order of the internal matching
+            algorithms and the associated confidence values. For a
+            list of supported algorithms, please refer to <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapUnderstanding" title="Chapter 3. Understanding BinDiff">Chapter&nbsp;3,
+            <i>Understanding BinDiff</i></a> .</p>
+
+            <p>For each <span class="emphasis"><em>Step</em></span>
+            element, the following attributes are supported:</p>
+
+            <div class="variablelist">
+              <dl>
+                <dt><span class="term">confidence</span></dt>
+
+                <dd>A value between zero and one indicating the
+                confidence when using the specified algorithm.</dd>
+
+                <dt><span class="term">algorithm</span></dt>
+
+                <dd>Name of the matching algorithm. Please note
+                that the name is case-sensitive.</dd>
+              </dl>
+            </div>
+          </dd>
+        </dl>
+      </div>While you may theoretically reorder algorithms at will,
+      not all combinations will yield usable results. Always back
+      up your config file before experimenting with changes. Great
+      care has been taken choosing sensible default values and
+      zynamics can only guarantee a properly working differ for the
+      default settings.
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="chapWalkthrough" name="chapWalkthrough"></a>Chapter&nbsp;6.&nbsp;A basic
+            walk-through Analyzing a Microsoft Patch</h2>
+          </div>
+        </div>
+      </div>
+
+      <p>In the following section, we will perform a short
+      walk-through explaining the use of BinDiff to
+      reverse-engineer a security patch. Our example will be
+      MS08-063.</p>
+
+      <div class="blockquote">
+        <blockquote class="blockquote">
+          <div class="blockquote-title">
+            <p><b>From MS08-063:</b></p>
+          </div>
+
+          <p>A remote code execution vulnerability exists in the
+          way that Microsoft Server Message Block (SMB) Protocol
+          handles specially crafted file names. An attempt to
+          exploit the vulnerability would require authentication
+          because the vulnerable function is only reachable when
+          the share type is a disk, and by default, all disk shares
+          require authentication. An attacker who successfully
+          exploited this vulnerability could install programs;
+          view, change, or delete data; or create new accounts with
+          full user rights.</p>
+        </blockquote>
+      </div>
+
+      <p>Microsoft also states that the exploitability is
+      “<span class="quote">inconsistent exploit likely</span>” ,
+      indicating that some complications are to be expected for
+      someone writing an exploit.</p>
+
+      <p>Begin by disassembling srv.sys in the unpatched version.
+      Then follow up by disassembling the patched variant of the
+      file. Make sure the IDB of the unpatched version is not
+      opened in another instance of IDA. Then press <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span> and select the unpatched
+      version as the target for the comparison using the
+      <span class="guibutton">Diff Database</span> button.</p>
+
+      <p>After a few moments, BinDiff should display the
+      <span class="guilabel">Matched Functions</span> subview. To
+      display the functions that changed, click the <span class="guilabel">similarity</span> column to sort by function
+      similarity. Functions that were changed in the patch will
+      have a similarity score of less than one.</p>
+
+      <div class="mediaobject">
+        <img src="./BinDiff Manual_files/tut00-changed-functions.png">
+
+        <div class="caption">
+          The changed functions in the patched binary.
+        </div>
+      </div>
+
+      <p>In the image above, a total of three functions were
+      changed:</p>
+
+      <div class="itemizedlist">
+        <ul>
+          <li>
+            <p><code class="computeroutput">SrvRestartRawReceive(x)</code></p>
+          </li>
+
+          <li>
+            <p><code class="computeroutput">SrvIssueQueryDirectoryRequest(x, x, x,
+            x, x, x, x, x)</code></p>
+          </li>
+
+          <li>
+            <p><code class="computeroutput">SrvFsdRestartPrepareRawMdlWrite(x)</code></p>
+          </li>
+        </ul>
+      </div>
+
+      <p>Let's examine the change in the middle: <code class="computeroutput">SrvIssueQueryDirectoryRequest</code> . If
+      you press <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>E</strong></span> with the cursor positioned
+      on this function, the BinDiff graph GUI is launched.</p>
+
+      <div class="mediaobject">
+        <img src="./BinDiff Manual_files/tut01-flowgraph.png">
+
+        <div class="caption">
+          <p>The BinDiff Graph GUI displaying the flow graph of
+          <code class="computeroutput">SrvIssueQueryDirectoryRequest</code>
+          .</p>
+        </div>
+      </div>
+
+      <p>The nodes in green indicate basic blocks that have
+      identical instruction mnemonics in both executables (although
+      operands to individual assembly instructions might have
+      changed), whereas the red nodes indicate basic blocks to
+      which our comparison algorithms were unable to find
+      equivalents. A third category, yellow nodes, indicates nodes
+      for which the algorithms could find equivalents, but which
+      had some instructions changed between versions.</p>
+
+      <p>Let's zoom in on the two smaller blocks on the left hand
+      side that have been inserted right before the large red
+      block.</p>
+
+      <div class="mediaobject">
+        <img src="./BinDiff Manual_files/tut02-flowgraph-detail.png">
+
+        <div class="caption">
+          <p>Zoomed-in on the changed parts of the function.</p>
+        </div>
+      </div>
+
+      <p>We can see that a 16-bit value is loaded into EDI, and
+      some calls to <code class="computeroutput">RtlUlongSub</code>
+      have been introduced which were not present in the old
+      version. If you click the <span class="guilabel">Lock
+      View</span> icon on the toolbar, and thus allow the two
+      halves of the graph to be desynchronized, you can start
+      right-click-panning on the right hand side to see the big
+      yellow block as it was in the unpatched version.</p>
+
+      <div class="mediaobject">
+        <img src="./BinDiff Manual_files/tut03-flowgraph-detail2.png">
+
+        <div class="caption">
+          <p>Estimating the set of additional changes.</p>
+        </div>
+      </div>
+
+      <p>Now, what <span class="emphasis"><em>did</em></span>
+      change? The old version takes a 16-bit value, subtracts it
+      from <code class="computeroutput">arg_8</code>, subtracts 8
+      from <code class="computeroutput">arg_8</code>, and then
+      rounds the result down to the next value divisible by 4.</p>
+
+      <p>The result of this calculation is then added to the local
+      variable <code class="computeroutput">VirtualAddress</code>,
+      and the number of bytes specified by this 16-bit value are
+      copied to the buffer pointed to by the result.</p>
+
+      <p>The new version replaces the regular integer arithmetic
+      with calls to <code class="computeroutput">RtlUlongSub</code>, which enforces that no
+      integer underflow occurs e.g. the result of a subtraction is
+      always smaller than the value that was subtracted from. In
+      pseudo-code:</p>
+      <pre class="programlisting">  index = (arg_8 - shortval - 8) &amp; 0xFFFFFFFC;
+  memcpy(&amp;destination[index + 8], eax-&gt;member_4, shortval);
+</pre>
+
+      <p>So the risk here was for an attacker to be able to choose
+      <code class="computeroutput">arg_8</code> and <code class="computeroutput">shortval</code> in such a manner that
+      <code class="computeroutput">index + 8</code> remains
+      negative allowing for memory corruption right before
+      <code class="computeroutput">destination</code>. The patched
+      version eliminates this problem by ensuring that the
+      arithmetic never drops below zero.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="chapAdvanced" name="chapAdvanced"></a>Chapter&nbsp;7.&nbsp;Advanced
+            Usage</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="toc">
+        <p><b>Table of Contents</b></p>
+
+        <dl>
+          <dt><span class="section"><a href="https://www.zynamics.com/bindiff/manual/#N20AB6">Porting
+          Comments and Symbols using BinDiff</a></span></dt>
+        </dl>
+      </div>
+
+      <p>From time to time, we will publish documents on advanced
+      usage of our products on our website <a class="link" href="http://www.zynamics.com/" target="">http://www.zynamics.com/</a>. Please check the
+      publications section frequently to see any additional
+      information that becomes available.</p>
+
+      <div class="section">
+        <div class="titlepage">
+          <div>
+            <div>
+              <h2 class="title"><a id="N20AB6" name="N20AB6"></a>Porting Comments and Symbols using
+              BinDiff</h2>
+            </div>
+          </div>
+        </div>
+
+        <p>Aside from analyzing security problems, symbol porting
+        is one of the most useful features of <span class="application">BinDiff</span>. Given an IDB in
+        which comments and names have been added, you can use
+        BinDiff to pull these names and comments into a new IDB for
+        a related executable.</p>
+
+        <p>In order to do this, please perform the following
+        steps:</p>
+
+        <div class="orderedlist">
+          <ol>
+            <li>Open the IDB into which you wish to port the
+            comments.</li>
+
+            <li>Press <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span> and compare the IDB
+            to the IDB from which you wish to import the
+            comments.</li>
+
+            <li>After diffing is complete, switch to the regular
+            IDA disassembly and hit <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>6</strong></span> again.</li>
+
+            <li>Click the <span class="guibutton">Port
+            Comments</span> button.</li>
+          </ol>
+        </div>
+
+        <p>All comments, local variable names and global variable
+        names that BinDiff can associate between the two
+        executables will be ported.</p>
+
+        <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+          <h3 class="title">Warning</h3>
+
+          <p>The names of local variables etc. in the current IDB
+          will be overwritten!</p>
+        </div>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/port-comments-before.png">
+
+          <div class="caption">
+            The database from which the comments are to be
+            imported.
+          </div>
+        </div>
+
+        <div class="mediaobject">
+          <img src="./BinDiff Manual_files/port-comments-after.png">
+
+          <div class="caption">
+            The modified database with ported comments.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appendix">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h2 class="title"><a id="N20B11" name="N20B11"></a>Appendix&nbsp;A.&nbsp;Questions and
+            Answers</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="qandaset">
+        <dl>
+          <dt>A.1. <a href="https://www.zynamics.com/bindiff/manual/#N20B18">General Questions</a></dt>
+
+          <dd>
+            <dl>
+              <dt>A.1.1. <a href="https://www.zynamics.com/bindiff/manual/#N20B1D">How come the Matched
+              functions subview is empty?</a></dt>
+
+              <dt>A.1.2. <a href="https://www.zynamics.com/bindiff/manual/#N20B35">Where did the Changed
+              functions subview go?</a></dt>
+            </dl>
+          </dd>
+
+          <dt>A.2. <a href="https://www.zynamics.com/bindiff/manual/#N20B51">Installation</a></dt>
+
+          <dd>
+            <dl>
+              <dt>A.2.1. <a href="https://www.zynamics.com/bindiff/manual/#N20B56">Administrative installation of BinDiff</a></dt>
+            </dl>
+          </dd>
+        </dl>
+
+        <table summary="Q and A Set" border="0">
+          <colgroup><col align="left" width="1%">
+
+          </colgroup><tbody>
+            <tr class="qandadiv">
+              <td colspan="2" valign="top" align="left">
+                <h3 class="title"><a id="N20B18" name="N20B18"></a>A.1. General Questions</h3>
+              </td>
+            </tr>
+
+            <tr class="toc">
+              <td colspan="2" valign="top" align="left">
+                <dl>
+                  <dt>A.1.1. <a href="https://www.zynamics.com/bindiff/manual/#N20B1D">How come the Matched
+                  functions subview is empty?</a></dt>
+
+                  <dt>A.1.2. <a href="https://www.zynamics.com/bindiff/manual/#N20B35">Where did the
+                  Changed functions subview go?</a></dt>
+                </dl>
+              </td>
+            </tr>
+
+            <tr class="question">
+              <td valign="top" align="left">
+                <a id="N20B1D" name="N20B1D"></a><a id="N20B1F" name="N20B1F"></a>
+
+                <p><b>A.1.1.</b></p>
+              </td>
+
+              <td valign="top" align="left">
+                <p>How come the <span class="guilabel">Matched
+                functions</span> subview is empty?</p>
+              </td>
+            </tr>
+
+            <tr class="answer">
+              <td valign="top" align="left"></td>
+
+              <td valign="top" align="left">
+                <p>Please refer to <a class="xref" href="https://www.zynamics.com/bindiff/manual/#chapConfiguration" title="Chapter 5. Configuration">Chapter&nbsp;5,
+                <i>Configuration</i></a> on how to properly
+                configure <span class="application">BinDiff</span>
+                and follow the instructions
+                contained within. If the problem persists although
+                you have enabled several algorithms for creating
+                initial fixedpoints, please contact us.</p>
+              </td>
+            </tr>
+
+            <tr class="question">
+              <td valign="top" align="left">
+                <a id="N20B35" name="N20B35"></a><a id="N20B37" name="N20B37"></a>
+
+                <p><b>A.1.2.</b></p>
+              </td>
+
+              <td valign="top" align="left">
+                <p>Where did the <span class="guilabel">Changed
+                functions</span> subview go?</p>
+              </td>
+            </tr>
+
+            <tr class="answer">
+              <td valign="top" align="left"></td>
+
+              <td valign="top" align="left">
+                <p>The functionality of both the <span class="guilabel">Changed functions</span> and the
+                <span class="guilabel">Matched functions</span>
+                subviews was merged. Changed functions are
+                functions with a similarity of less than one,
+                whereas identical functions have a similarity score
+                of exactly one. For a more detailed description,
+                refer to <a class="xref" href="https://www.zynamics.com/bindiff/manual/#sectMatchedFunctions" title="The Matched Functions Subview">the section called
+                “The Matched Functions Subview”</a>.</p>
+              </td>
+            </tr>
+
+            <tr class="qandadiv">
+              <td colspan="2" valign="top" align="left">
+                <h3 class="title"><a id="N20B51" name="N20B51"></a>A.2. Installation</h3>
+              </td>
+            </tr>
+
+            <tr class="toc">
+              <td colspan="2" valign="top" align="left">
+                <dl>
+                  <dt>A.2.1. <a href="https://www.zynamics.com/bindiff/manual/#N20B56">Administrative installation of
+                  BinDiff</a></dt>
+                </dl>
+              </td>
+            </tr>
+
+            <tr class="question">
+              <td valign="top" align="left">
+                <a id="N20B56" name="N20B56"></a><a id="N20B58" name="N20B58"></a>
+
+                <p><b>A.2.1.</b></p>
+              </td>
+
+              <td valign="top" align="left"><span class="application">Administrative installation of
+              BinDiff</span></td>
+            </tr>
+
+            <tr class="answer">
+              <td valign="top" align="left"></td>
+
+              <td valign="top" align="left">
+                <p>For simple administrative installs just prepend
+                <span class="command"><strong>msiexec
+                /quiet</strong></span> (no output at all) or
+                <span class="command"><strong>msiexec
+                /passive</strong></span> (progress bar only) to the
+                installation package: <span class="command"><strong>msiexec /passive
+                bindiff420-win-x86.msi</strong></span>.</p>
+
+                <p>The installation package can also be deployed
+                via Group Policies just like any other Windows
+                Installer package.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Report BinDiff bugs to
+      <code class="email">&lt;<a class="email" href="mailto:zynamics-support@google.com">zynamics-support@google.com</a>&gt;</code>.</p>
+    </div>
+  </div>
+
+
+</div></body></html>

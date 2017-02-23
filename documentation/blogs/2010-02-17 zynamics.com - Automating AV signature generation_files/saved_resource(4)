@@ -1,0 +1,253 @@
+html {
+height:100%;
+margin:0;
+padding:0;
+}
+
+body {
+background:#eee url('https://zynamics.files.wordpress.com/2010/01/main_bg.gif') top repeat-x!important;
+font-family:Arial,Helvetica,sans-serif!important;
+font-size:9pt;
+font-style:normal;
+font-weight:normal;
+color:#545454!important;
+margin:0;
+padding:0;
+}
+
+a:link,a:visited,a:active {
+font-family:Arial,Helvetica,sans-serif;
+color:#545454;
+text-decoration:none;
+}
+
+a:hover {
+color:#fa9c2d;
+text-decoration:underline;
+}
+
+div.post div.entry a {
+text-decoration:underline;
+}
+
+div {
+float:none;
+}
+
+hr {
+display:none;
+}
+
+#page {
+position:relative;
+top:20px;
+width:800px;
+color:#545454!important;
+font-family:Arial,Helvetica,sans-serif!important;
+background:#fff!important;
+border:1px solid #747474!important;
+margin:0 auto;
+padding:0;
+}
+
+#header {
+position:relative;
+height:147px!important;
+width:800px!important;
+color:#ebebeb!important;
+background:url('https://zynamics.files.wordpress.com/2010/01/header2.gif') top no-repeat!important;
+margin:0;
+padding:0!important;
+}
+
+#headerimg {
+width:auto!important;
+height:147px!important;
+text-align:right;
+background:url('https://zynamics.files.wordpress.com/2010/01/main_menu_bg.gif') 0 140px repeat-x;
+margin:0!important;
+}
+
+#headerimg h1 {
+display:inline;
+line-height:24px;
+margin:0;
+}
+
+#headerimg h1 a {
+font-size:9pt;
+font-weight:bold;
+}
+
+#header .description {
+display:inline;
+color:#545454;
+margin:0 20px 0 4px;
+}
+
+.navigation .alignleft {
+display:inline;
+}
+
+.navigation .alignright {
+float:right;
+margin-bottom:10px;
+}
+
+#content {
+float:right;
+width:500px;
+margin-right:65px;
+padding-top:10px;
+}
+
+h2.pagetitle {
+font:bold 12pt Arial;
+margin:0 0 10px;
+padding:0;
+}
+
+div.post {
+clear:both;
+background:url('https://zynamics.files.wordpress.com/2010/01/content_item_bg.gif') left repeat-y;
+}
+
+div.post.clear {
+margin-bottom:20px!important;
+}
+
+div.post h2,div.post h3 {
+background:url('https://zynamics.files.wordpress.com/2010/01/content_item_header_bg.gif') top left no-repeat;
+font:bold 12pt Arial;
+margin:0;
+padding:10px 10px 0;
+}
+
+div.post .entry h3,div.post .entry h4 {
+color:#545454!important;
+background:none;
+margin:0;
+padding:10px 0 0;
+}
+
+div.post .entry h3 {
+font:bold 11pt Arial;
+}
+
+div.post .entry h4 {
+font:bold 10pt Arial;
+}
+
+div.post .entry .aligncenter {
+width:auto!important;
+text-align:center;
+}
+
+div.post .entry .wp-caption-text {
+font-size:8pt;
+margin:4px 0 0!important;
+}
+
+div.post small {
+font-size:8pt;
+padding:0 10px;
+}
+
+div.post div.entry {
+line-height:1.3;
+}
+
+div.post .postmetadata {
+background:url('https://zynamics.files.wordpress.com/2010/01/content_item_footer_bg.gif') bottom left no-repeat;
+font-size:8pt;
+line-height:1.0;
+padding:0 10px 10px;
+}
+
+div.post .postmetadata.alt {
+margin:0 -10px -10px;
+}
+
+div.post .entry {
+padding:0 10px;
+}
+
+#sidebar {
+float:left;
+margin:10px 0 0 70px;
+}
+
+#sidebar ul {
+list-style-type:none;
+width:150px;
+}
+
+#sidebar ul,#sidebar li {
+font-size:8pt;
+margin:0;
+padding:0;
+}
+
+li.widget {
+background:url('https://zynamics.files.wordpress.com/2010/01/content_leftitem_bg.gif') left repeat-y;
+margin:0 0 10px!important;
+padding:0!important;
+}
+
+li.widget h2.widgettitle {
+background:url('https://zynamics.files.wordpress.com/2010/01/content_leftitem_header_bg.gif') top left no-repeat;
+color:#545454;
+font-size:9pt;
+margin:0!important;
+padding:10px 0 10px 10px;
+}
+
+li.widget ul {
+background:url('https://zynamics.files.wordpress.com/2010/01/content_leftitem_footer_bg.gif') bottom left no-repeat;
+padding-bottom:10px!important;
+}
+
+li.widget ul li {
+padding:0 10px!important;
+}
+
+li.widget_text,li.widget_search {
+margin-bottom:0!important;
+}
+
+li.widget_search div {
+padding:0 10px;
+}
+
+li.widget_search #livesearch {
+width:124px;
+}
+
+li.widget_rss_links {
+padding-top:10px!important;
+}
+
+#footer {
+clear:both;
+float:none;
+height:30px;
+background:#fff url('https://zynamics.files.wordpress.com/2010/01/footer_bg.gif') top repeat-y!important;
+text-align:right;
+}
+
+#footer p {
+padding:2px 20px 0 0;
+}
+
+#footer p,#footer a {
+color:#747474;
+font-size:8pt;
+}
+
+#footer a:hover {
+text-decoration:underline;
+}
+
+#wpstats {
+visibility:hidden;
+}

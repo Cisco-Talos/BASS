@@ -1,0 +1,5 @@
+# Ingore python compiled files
+*.pyc
+
+# Ingore MacOs garbage
+.DS_Store
