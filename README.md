@@ -1,3 +1,5 @@
+![BASS logo](/documentation/images/BASS_logo_fullcolor_onwhite.png)
+
 BASS
 ====
 BASS (pronounced “bæs”) is a framework designed to automatically generate
