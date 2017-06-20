@@ -50,6 +50,8 @@ root directory to build BASS' containers.
 Running BASS
 ------------
 
+If you have a VirusTotal key, export it in the shell where you run the docker
+(e.g., `export VIRUSTOTAL_API_KEY=xxx` in bash).
 Run `docker-compose up` in the project's root directory to start BASS.
 
 Then use the client in client/client.py to submit samples and get the resulting
