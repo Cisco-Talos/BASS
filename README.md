@@ -11,3 +11,76 @@ Please note that this framework is still considered in the Alpha stage and as a
 result, it will have some rough edges. As this tool is open source and actively
 maintained by us, we gladly welcome any feedback from the community on
 improving the functionality of BASS.
+
+Installation
+------------
+
+### Prerequisites
+You need Docker 
+([installation instructions](https://docs.docker.com/engine/installation/#docker-cloud)) 
+and docker-compose ([installation instructions](https://docs.docker.com/compose/install/))
+installed. Even if your distribution has packages for those, we recommend you
+to install them as described in the installation instructions to have the
+newest versions available. Parts of our software might not work with old
+versions of docker and docker-compose.
+
+Further, the client to speak to the docker cluster needs the python _requests_
+package installed. This can for example be done with `pip install requests` if
+you use python's pip package manager.
+
+Finally, you need docker-ida to build a container for IDA Pro. On \*nix, you
+can get and build docker-ida with the following commands:
+
+    IDA_BINARY=... #Make this variable point to your IDA Pro installation binary
+    IDA_PASSWORD=... #Set this variable to your IDA Pro installation password
+    git clone https://github.com/intezer/docker-ida
+    cp ${IDA_BINARY} docker-ida/ida/ida.run
+    export IDA_PASSWORD
+    docker build -t ida docker-ida/ida/
+
+You have to set the two variables at the beginning, and you need to tag the
+resulting docker container with "ida".
+
+### Building the containers
+Normally it should be enough to run `docker-compose build` in the repository
+root directory to build BASS' containers.
+
+Running BASS
+------------
+
+Run `docker-compose up` in the project's root directory to start BASS.
+
+Then use the client in client/client.py to submit samples and get the resulting
+signature.
+
+For example, run `python ./client/client.py sample1 sample2 sample3`
+to generate a signature for the cluster consisting of binaries _sample1_, _sample2_
+and _sample3_.
+
+
+Debugging
+---------
+
+The job object has an _exception_ and _exception\_trace_ property which contain
+information about a raised exception if the job finished with an error status.
+
+Debug logs may be found in the docker volume mounted to _/tmp/bass\_logs_. In
+particular it might be helpful to track progress in the most recent log file
+via `tail -f $( ls /tmp/bass_logs/*.log | tail -n 1 )`.
+
+Hacking
+-------
+
+The client is contained in _client/_.
+
+The folders _bass/_, _bindiff/_ and _kamino/_ contain the docker containers for
+the specific tools. 
+
+Python APIs for the REST interface of kamino and bindiff are in
+_./bass/python/cisco/bass/docker/_. 
+
+The k-LCS algorithm is implemented as a C library (source in
+_./bass/python/src/\_lcs.cpp_) which is interfaced with ctypes.
+
+If you are looking for a starting point to the signature generation process,
+have a look at _./bass/python/cisco/bass/core.py_.
