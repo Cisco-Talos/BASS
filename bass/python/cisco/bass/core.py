@@ -16,7 +16,7 @@ import traceback
 import shutil
 import re
 from cisco.bass.bindiffdb import BinDiff as BinDiffDb
-from collectmons import defaultdict
+from collections import defaultdict
 from networkx import Graph
 from networkx.drawing.nx_agraph import write_dot
 from cisco.bass.algorithms import ndb_from_common_sequence, hamming_klcs
