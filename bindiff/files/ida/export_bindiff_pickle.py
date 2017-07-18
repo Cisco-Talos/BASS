@@ -130,7 +130,7 @@ def pickle_database(path):
         pickle.dump(database, file_, 2)
 
 def binexport_database(path):
-    idc.Eval("BinExport2Diff8(\"%s\")" % path)
+    idc.Eval("BinExport2Diff9(\"%s\")" % path)
 
 def main(args):
     binexport_database(args.bindiff_output)

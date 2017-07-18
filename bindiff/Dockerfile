@@ -19,7 +19,7 @@ RUN apt-get install -y curl openjdk-8-jre
 WORKDIR ${PREFIX}
 RUN mkdir -p packages/bindiff
 WORKDIR packages/bindiff
-RUN curl -o bindiff.deb https://dl.google.com/dl/zynamics/bindiff420-debian8-amd64.deb
+RUN curl -o bindiff.deb https://dl.google.com/dl/zynamics/bindiff_4.3.0_amd64.deb
 RUN echo "debconf bindiff/accepted-bindiff-license boolean true" | debconf-set-selections
 #TODO: Specify good IDA Path from the parent container here
 RUN echo "debconf zynamics/ida_location string /ida" | debconf-set-selections

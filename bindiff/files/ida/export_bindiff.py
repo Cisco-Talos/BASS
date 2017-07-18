@@ -11,7 +11,7 @@ import os
 import argparse
 
 def binexport_database(path):
-    idc.Eval("BinExport2Diff8(\"%s\")" % path)
+    idc.Eval("BinExport2Diff9(\"%s\")" % path)
 
 def main(args):
     binexport_database(args.bindiff_output)
