@@ -1,9 +1,11 @@
 version: '2'
 services:
-    bindiff:
-        build: bindiff/
-        volumes:
-            - bindiff_volume:/shared
+    ida:
+        build:
+            context: ida7/
+            args:
+                IDA_WEB_PASSWORD: ${IDA_WEB_PASSWORD}
+                IDA_PASSWORD: ${IDA_PASSWORD}
         expose:
             - "80"
     bass:
@@ -15,7 +17,23 @@ services:
             - "5000:5000"
         environment:
             - VIRUSTOTAL_API_KEY
-            
+
+    funcdb:
+        build: funcdb/
+        environment:
+            - DATABASE=postgresql://user:password@db:5432/funcdb
+        ports:
+            - "31337:80"
+        depends_on:
+            - db
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=funcdb
+        expose:
+            - "5432"
 
 volumes:
     bindiff_volume:

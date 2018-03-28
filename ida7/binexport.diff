@@ -1,0 +1,1934 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f827590..d35807a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -46,7 +46,7 @@ file(RENAME ${PROJECT_BINARY_DIR}/ins/allins.hpp
+ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/third_party/zynamics)
+ if(UNIX)
+   execute_process(COMMAND
+-    ${CMAKE_COMMAND} -E create_symlink ../../..
++    ${CMAKE_COMMAND} -E create_symlink ../..
+     ${PROJECT_BINARY_DIR}/third_party/zynamics/binexport)
+ elseif(WIN32)
+   file(TO_NATIVE_PATH
+@@ -86,9 +86,11 @@ set(BinExport_Proto_SRCS binexport2.proto)
+ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${BinExport_Proto_SRCS})
+ add_library(binexport_proto STATIC ${PROTO_SRCS})
+ add_dependencies(binexport_proto ${PROTOBUF_LIBRARIES})
++set_target_properties(binexport_proto PROPERTIES COMPILE_FLAGS "-fPIC")
+ 
+ add_library(binexport_shared STATIC filesystem_util.cc)
+ add_dependencies(binexport_shared ${PROTOBUF_LIBRARIES})
++set_target_properties(binexport_shared PROPERTIES COMPILE_FLAGS "-fPIC")
+ add_executable(binexport_shared_test filesystem_util_test.cc
+                                      timer_test.cc)
+ set(binexport_shared_test_LIBRARIES binexport_shared
+@@ -102,7 +104,7 @@ add_test(AllTestsInBinExportShared binexport_shared_test)
+ 
+ add_subdirectory(tools)
+ 
+-if(NOT COMPILE_64BIT)
++#if(NOT COMPILE_64BIT)
+   add_library(binexport_plugin_shared STATIC hash.cc
+                                              hash.h
+                                              hex_codec.cc
+@@ -113,6 +115,7 @@ if(NOT COMPILE_64BIT)
+                                              ida/log.h)
+   add_dependencies(binexport_plugin_shared ${OPENSSL_LIBRARIES}
+                                            ${PROTOBUF_LIBRARIES})
++  set_target_properties(binexport_plugin_shared PROPERTIES COMPILE_FLAGS "-fPIC")
+   target_compile_definitions(binexport_plugin_shared PUBLIC
+                              ${IdaSdk_PLATFORM}
+                              __IDP__
+@@ -209,4 +212,4 @@ if(NOT COMPILE_64BIT)
+   endif()
+   target_link_libraries(${_be_plugin_name}${_plx} ${BinExport_LIBRARIES})
+   target_link_libraries(${_be_plugin_name}${_plx64} ${BinExport_LIBRARIES})
+-endif()
++#endif()
+diff --git a/ExternalProtobuf.cmake b/ExternalProtobuf.cmake
+index 993490a..78a59c9 100644
+--- a/ExternalProtobuf.cmake
++++ b/ExternalProtobuf.cmake
+@@ -55,6 +55,7 @@ else()
+       -Dprotobuf_BUILD_TESTS=OFF
+       -Dprotobuf_BUILD_SHARED_LIBS=OFF
+       -Dprotobuf_WITH_ZLIB=OFF
++      -DCMAKE_CXX_FLAGS="-fPIC"
+     BUILD_COMMAND ""
+     INSTALL_COMMAND "${CMAKE_COMMAND}"
+       --build "<BINARY_DIR>" --config ${CMAKE_BUILD_TYPE} --target install)
+diff --git a/FindIdaSdk.cmake b/FindIdaSdk.cmake
+index f0eea45..90ef049 100644
+--- a/FindIdaSdk.cmake
++++ b/FindIdaSdk.cmake
+@@ -60,8 +60,8 @@ if(APPLE)
+   set(_llx64 64.lmc64)   # An additional "64"
+ elseif(UNIX)
+   set(IdaSdk_PLATFORM __LINUX__)
+-  set(_plx .plx)
+-  set(_plx64 .plx64)
++  set(_plx .so)
++  set(_plx64 _64.so)
+   set(_llx .llx)
+   set(_llx64 64.llx64)   # An additional "64"
+ elseif(WIN32)
+@@ -89,12 +89,13 @@ function(_ida_plugin name ea64 link_script)  # ARGN contains sources
+                              ${IdaSdk_PLATFORM}
+                              __IDP__
+                              USE_DANGEROUS_FUNCTIONS
+-                             USE_STANDARD_FILE_FUNCTIONS)
++                             USE_STANDARD_FILE_FUNCTIONS
++                             __X64__)
+ 
+-  set_target_properties(${name} PROPERTIES PREFIX "" SUFFIX "")
++  set_target_properties(${name} PROPERTIES PREFIX "" SUFFIX "" COMPILE_FLAGS "-fPIC")
+   if(UNIX)
+     # Always build a 32-bit executable and use the linker script needed for IDA.
+-    target_compile_options(${name} PUBLIC -m32)
++    target_compile_options(${name} PUBLIC)
+     if(APPLE)
+       target_link_libraries(${name} -m32
+                                     -Wl,-flat_namespace
+@@ -103,7 +104,7 @@ function(_ida_plugin name ea64 link_script)  # ARGN contains sources
+     else()
+       set(script_flag )
+       target_link_libraries(${name}
+-        -m32 -Wl,--version-script ${IdaSdk_DIR}/${link_script})
++        -Wl,--version-script ${IdaSdk_DIR}/${link_script})
+     endif()
+ 
+     # For qrefcnt_obj_t in ida.hpp
+diff --git a/ida/arm.cc b/ida/arm.cc
+index f9b3082..049ec18 100644
+--- a/ida/arm.cc
++++ b/ida/arm.cc
+@@ -132,15 +132,17 @@ std::string GetCoprocessorName(size_t processor_id) {
+ }  // namespace
+ 
+ Operands DecodeOperandsArm(const Address address) {
++  insn_t cmd;
++  decode_insn(&cmd, address);
+   bool co_processor = cmd.auxpref & aux_coproc ? true : false;
+ 
+   Operands operands;
+   for (uint8_t operand_position = 0;
+        operand_position < UA_MAXOP &&
+-       cmd.Operands[operand_position].type != o_void;
++       cmd.ops[operand_position].type != o_void;
+        ++operand_position) {
+     Expressions expressions;
+-    const op_t& operand = cmd.Operands[operand_position];
++    const op_t& operand = cmd.ops[operand_position];
+ 
+     Expression* expression = NULL;
+     switch (operand.type) {
+@@ -152,7 +154,7 @@ Operands DecodeOperandsArm(const Address address) {
+         // register
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         if (cmd.auxpref & aux_wbackldm) {
+           expressions.push_back(
+@@ -162,7 +164,7 @@ Operands DecodeOperandsArm(const Address address) {
+         expressions.push_back(
+             expression = Expression::Create(
+                 expression,
+-                GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++                GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+                 Expression::TYPE_REGISTER, 0));
+         break;
+       }
+@@ -172,7 +174,7 @@ Operands DecodeOperandsArm(const Address address) {
+         const Name name = GetName(address, immediate, operand_position, false);
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "[", 0,
+@@ -191,7 +193,7 @@ Operands DecodeOperandsArm(const Address address) {
+         //           the shift counter is in shcnt (value)
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         if (cmd.auxpref & aux_wback) {
+           expressions.push_back(
+@@ -206,7 +208,7 @@ Operands DecodeOperandsArm(const Address address) {
+                                             Expression::TYPE_OPERATOR, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+ 
+         if (operand.value) {  // shift
+@@ -215,7 +217,7 @@ Operands DecodeOperandsArm(const Address address) {
+                                     Expression::TYPE_OPERATOR, 1));
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(operand.specflag1, GetOperandByteSize(operand)),
++              GetRegisterName(operand.specflag1, GetOperandByteSize(cmd, operand)),
+               0, Expression::TYPE_REGISTER, 0));
+           expressions.push_back(
+               Expression::Create(expression, "", operand.value,
+@@ -223,7 +225,7 @@ Operands DecodeOperandsArm(const Address address) {
+         } else {
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(operand.specflag1, GetOperandByteSize(operand)),
++              GetRegisterName(operand.specflag1, GetOperandByteSize(cmd, operand)),
+               0, Expression::TYPE_REGISTER, 1));
+         }
+         break;
+@@ -233,7 +235,7 @@ Operands DecodeOperandsArm(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         if (cmd.auxpref & aux_wback)
+           expressions.push_back(
+@@ -250,7 +252,7 @@ Operands DecodeOperandsArm(const Address address) {
+                                               Expression::TYPE_OPERATOR, 0));
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++              GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+               Expression::TYPE_REGISTER, 0));
+           expressions.push_back(Expression::Create(
+               expression, name.name, operand.addr,
+@@ -263,7 +265,7 @@ Operands DecodeOperandsArm(const Address address) {
+           }
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++              GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+               Expression::TYPE_REGISTER, 0));
+           if (offset) {
+             const Name name = GetName(address, offset, operand_position, false);
+@@ -284,7 +286,7 @@ Operands DecodeOperandsArm(const Address address) {
+ 
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(
+               expression = Expression::Create(expression, ",", 0,
+@@ -303,7 +305,7 @@ Operands DecodeOperandsArm(const Address address) {
+ 
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(
+               expression = Expression::Create(
+@@ -321,7 +323,7 @@ Operands DecodeOperandsArm(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -342,14 +344,14 @@ Operands DecodeOperandsArm(const Address address) {
+         const uval_t shiftCount = operand.value;
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, GetShift(shiftType), 0,
+                                             Expression::TYPE_OPERATOR, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(registerIndex, GetOperandByteSize(operand)), 0,
++            GetRegisterName(registerIndex, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+         if (shiftType == 4) {
+           // == RRX, no further expression because it
+@@ -362,7 +364,7 @@ Operands DecodeOperandsArm(const Address address) {
+         } else {
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(shiftRegister, GetOperandByteSize(operand)), 0,
++              GetRegisterName(shiftRegister, GetOperandByteSize(cmd, operand)), 0,
+               Expression::TYPE_REGISTER, 1));
+         }
+         break;
+@@ -373,7 +375,7 @@ Operands DecodeOperandsArm(const Address address) {
+         // #define uforce specflag1     // PSR & force user bit
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "{", 0,
+@@ -382,7 +384,7 @@ Operands DecodeOperandsArm(const Address address) {
+           if (operand.specval & ea_t(1 << i)) {
+             expressions.push_back(Expression::Create(
+                 expression, GetRegisterName(static_cast<size_t>(i),
+-                                            GetOperandByteSize(operand)),
++                                            GetOperandByteSize(cmd, operand)),
+                 0, Expression::TYPE_REGISTER, static_cast<uint8_t>(i)));
+           }
+         }
+@@ -423,7 +425,7 @@ Operands DecodeOperandsArm(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "{", 0,
+@@ -432,7 +434,7 @@ Operands DecodeOperandsArm(const Address address) {
+         for (uval_t i = 0; i < operand.value; ++i) {
+           expressions.push_back(Expression::Create(
+               expression, GetRegisterName(static_cast<size_t>(operand.reg + i),
+-                                          GetOperandByteSize(operand)),
++                                          GetOperandByteSize(cmd, operand)),
+               0, Expression::TYPE_REGISTER, static_cast<uint8_t>(i)));
+         }
+         break;
+@@ -476,13 +478,16 @@ Instruction ParseInstructionIdaArm(Address address, CallGraph* /* call_graph */,
+ 
+   // const insn_t & instruction = cmd;
+   // size_t iType = cmd.itype;
+-  char buffer[128];
+-  memset(buffer, 0, sizeof(buffer));
++  qstring buffer;
++  insn_t cmd;
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return Instruction(address);
++  }
+   if (!IsCode(address) ||
+-      !ua_mnem(static_cast<ea_t>(address), buffer, sizeof(buffer))) {
++      !print_insn_mnem(&buffer, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+-  std::string mnemonic(buffer);
++  std::string mnemonic(buffer.begin(), buffer.end());
+   if (mnemonic.empty()) {
+     return Instruction(address);
+   }
+@@ -716,8 +721,8 @@ Instruction ParseInstructionIdaArm(Address address, CallGraph* /* call_graph */,
+                                         "DA", "DB", "IA", "IB"};
+     static const char* const stack[] = {"ED", "FD", "EA", "FA",
+                                         "FA", "EA", "FD", "ED"};
+-    const op_t& operand = cmd.Operands[0];
+-    if (GetRegisterName(operand.reg, GetOperandByteSize(operand)) ==
++    const op_t& operand = cmd.ops[0];
++    if (GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)) ==
+             std::string("SP") &&
+         cmd.itype != ARM_srs) {
+       mnemonic += stack[n];
+diff --git a/ida/dalvik.cc b/ida/dalvik.cc
+index 5d72799..4a6c506 100644
+--- a/ida/dalvik.cc
++++ b/ida/dalvik.cc
+@@ -135,7 +135,7 @@ dex_header_item& GetDexHeader() {
+   static bool header_init_done(false);
+   if (!header_init_done) {
+     memset(&header, 0, sizeof(dex_header_item));
+-    get_many_bytes(0, &header, sizeof(dex_header_item));
++    get_bytes(&header, sizeof(dex_header_item), 0);
+     header_init_done = true;
+   }
+   return header;
+@@ -143,19 +143,24 @@ dex_header_item& GetDexHeader() {
+ 
+ std::string GetTypeNameByIndex(size_t index) {
+   dex_header_item& header(GetDexHeader());
+-  uint32_t type_idx(get_long(header.type_ids_off + index * sizeof(uint32_t)));
++  uint32_t type_idx(get_dword(header.type_ids_off + index * sizeof(uint32_t)));
+   uint32_t str_off(
+-      get_long(header.string_ids_off + type_idx * sizeof(uint32_t)));
++      get_dword(header.string_ids_off + type_idx * sizeof(uint32_t)));
+   return GetDexString(str_off);
+ }
+ 
+ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+                                 FlowGraph* flow_graph) {
+   Operands operands;
++  insn_t cmd;
+ 
+-  for (uint8_t i = 0; i < UA_MAXOP && cmd.Operands[i].type != o_void; ++i) {
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return operands;
++  }
++
++  for (uint8_t i = 0; i < UA_MAXOP && cmd.ops[i].type != o_void; ++i) {
+     Expressions expressions;
+-    const op_t& op(cmd.Operands[i]);
++    const op_t& op(cmd.ops[i]);
+ 
+     Expression* expr = nullptr;
+     switch (op.type) {
+@@ -170,7 +175,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+ 
+       case dex_o_reg: {
+         // Get canonical register name for operand
+-        std::string regName(GetRegisterName(op.reg, GetOperandByteSize(op)));
++        std::string regName(GetRegisterName(op.reg, GetOperandByteSize(cmd, op)));
+ 
+         if (op.dex_regpair) {
+           // Register pairs encode 64-bit values
+@@ -178,7 +183,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+               Expression::Create(expr, "b8", 0, Expression::TYPE_SIZEPREFIX, 0);
+           expressions.push_back(expr);
+           std::string regName2(
+-              GetRegisterName(op.reg + 1, GetOperandByteSize(op)));
++              GetRegisterName(op.reg + 1, GetOperandByteSize(cmd, op)));
+           expr = Expression::Create(expr, regName + ":" + regName2, 0,
+                                     Expression::TYPE_REGISTER, 0);
+           expressions.push_back(expr);
+@@ -201,7 +206,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+         break;
+       }
+       case dex_o_imm: {
+-        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(op)),
++        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(cmd, op)),
+                                   0, Expression::TYPE_SIZEPREFIX, 0);
+         expressions.push_back(expr);
+ 
+@@ -224,7 +229,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+           name.type = Expression::TYPE_GLOBALVARIABLE;
+         }
+ 
+-        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(op)),
++        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(cmd, op)),
+                                   0, Expression::TYPE_SIZEPREFIX, 0);
+         expressions.push_back(expr);
+ 
+@@ -239,7 +244,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+         // TODO(cblichmann) Check if we should use the size of a single
+         //                  character (the type "pointed to").
+         // TODO(cblichmann) Add string as a comment.
+-        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(op)),
++        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(cmd, op)),
+                                   0, Expression::TYPE_SIZEPREFIX, 0);
+         expressions.push_back(expr);
+ 
+@@ -259,7 +264,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+       case dex_o_type: {
+         std::string str(GetTypeNameByIndex(static_cast<size_t>(op.value)));
+ 
+-        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(op)),
++        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(cmd, op)),
+                                   0, Expression::TYPE_SIZEPREFIX, 0);
+         expressions.push_back(expr);
+ 
+@@ -271,7 +276,7 @@ Operands ParseOperandsIdaDalvik(Address address, CallGraph* /* call_graph */,
+         break;
+       }
+       case dex_o_field: {
+-        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(op)),
++        expr = Expression::Create(expr, GetSizePrefix(GetOperandByteSize(cmd, op)),
+                                   0, Expression::TYPE_SIZEPREFIX, 0);
+         expressions.push_back(expr);
+ 
+@@ -317,13 +322,18 @@ Instruction ParseInstructionIdaDalvik(Address address, CallGraph* call_graph,
+   // If the address contains no code of if the text representation could not
+   // be generated, return an empty instruction. Do the same if the mnemonic
+   // is empty.
+-  char buffer[128];
+-  memset(buffer, 0, sizeof(buffer));
++  qstring buffer;
++  insn_t cmd;
++
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return Instruction(address);
++  }
++
+   if (!IsCode(address) ||
+-      !ua_mnem(static_cast<ea_t>(address), buffer, sizeof(buffer))) {
++      !print_insn_mnem(&buffer, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+-  std::string mnemonic(buffer);
++  std::string mnemonic(buffer.begin(), buffer.end());
+   if (mnemonic.empty()) {
+     return Instruction(address);
+   }
+diff --git a/ida/generic.cc b/ida/generic.cc
+index 5495a05..919c4a6 100644
+--- a/ida/generic.cc
++++ b/ida/generic.cc
+@@ -29,13 +29,13 @@ Instruction ParseInstructionIdaGeneric(Address address,
+                                        CallGraph* /* call_graph */,
+                                        FlowGraph* /* flow_graph */,
+                                        TypeSystem* /* type_system */) {
+-  if (!IsCode(address) || !decode_insn(static_cast<ea_t>(address))) {
++  insn_t cmd;
++  if (!IsCode(address) || !decode_insn(&cmd, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+ 
+-  enum { kBufferSize = 8192 };
+-  char buffer[kBufferSize] = {0};
+-  if (!generate_disasm_line(static_cast<ea_t>(address), buffer, kBufferSize)) {
++  qstring buffer;
++  if (!generate_disasm_line(&buffer, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+ 
+@@ -50,17 +50,17 @@ Instruction ParseInstructionIdaGeneric(Address address,
+   }
+ 
+   // parse mnemonic using the embedded tags
+-  const char* start = 0;
+-  for (const char* i = buffer; i != buffer + kBufferSize && *i; ++i) {
+-    if (*i == COLOR_INSN) {  // we are looking for a "\1\5" combination
+-      start = i + 1;
++  qstring::const_iterator start;
++  for (qstring::const_iterator itr = buffer.begin(), end = buffer.end(); itr != end; ++itr) {
++    if (*itr == COLOR_INSN) {  // we are looking for a "\1\5" combination
++      start = itr + 1;
+       break;
+     }
+   }
+-  const char* end = 0;
+-  for (const char* i = start; i && i != buffer + kBufferSize && *i; ++i) {
+-    if (*i == COLOR_INSN) {  // we are looking for a "\2\5" combination
+-      end = i - 1;
++  qstring::const_iterator end;
++  for (qstring::const_iterator itr = start, end = buffer.end(); itr != end; ++itr) {
++    if (*itr == COLOR_INSN) {  // we are looking for a "\2\5" combination
++      end = itr - 1;
+       break;
+     }
+   }
+@@ -71,10 +71,9 @@ Instruction ParseInstructionIdaGeneric(Address address,
+   const std::string mnemonic(start, end);
+ 
+   // remove color tags and use the rest of the string as a single operand
+-  const size_t length = tag_remove(buffer, buffer, kBufferSize);
+-  buffer[length] = '\0';
++  tag_remove(&buffer);
+ 
+-  std::string operand(buffer + mnemonic.size(), length - mnemonic.size());
++  std::string operand(buffer.begin() + mnemonic.size(), buffer.end() - mnemonic.size());
+   StripWhitespace(&operand);
+ 
+   Operands operands;
+diff --git a/ida/main_plugin.cc b/ida/main_plugin.cc
+index 6c7bfc2..9daeedd 100644
+--- a/ida/main_plugin.cc
++++ b/ida/main_plugin.cc
+@@ -68,12 +68,12 @@ std::string GetDataForHash() {
+   std::string data;
+   for (segment_t* segment = get_first_seg();
+        segment != 0 && data.size() < (32 << 20 /* 32 MiB */);
+-       segment = get_next_seg(segment->startEA)) {
++       segment = get_next_seg(segment->start_ea)) {
+     // Truncate segments longer than 1MB so we don't produce too long a string.
+-    for (ea_t address = segment->startEA;
+-         address < std::min(segment->endEA, segment->startEA + (1 << 20));
++    for (ea_t address = segment->start_ea;
++         address < std::min(segment->end_ea, segment->start_ea + (1 << 20));
+          ++address) {
+-      if (getFlags(address)) {
++      if (get_full_flags(address)) {
+         // check whether address is loaded
+         data += get_byte(address);
+       }
+@@ -110,7 +110,7 @@ void ExportDatabase(ChainWriter& writer) {
+     EntryPointAdder entry_point_adder(&entry_points, "function chunks");
+     for (size_t i = 0; i < get_fchunk_qty(); ++i) {
+       if (const func_t* idaFunc = getn_fchunk(i)) {
+-        entry_point_adder.Add(idaFunc->startEA,
++        entry_point_adder.Add(idaFunc->start_ea,
+                               (idaFunc->flags & FUNC_TAIL)
+                                   ? EntryPoint::Source::FUNCTION_CHUNK
+                                   : EntryPoint::Source::FUNCTION_PROLOGUE);
+@@ -190,9 +190,9 @@ int ExportBinary(const std::string& filename) {
+   return eOk;
+ }
+ 
+-void idaapi ButtonBinaryExport(TView** /* fields */, int) {
++void idaapi ButtonBinaryExport(TWidget** /* fields */, int) {
+   const auto name(GetDefaultName(ExportMode::kBinary));
+-  const char* filename = askfile2_c(
++  const char* filename = ask_file(
+       /* forsave = */ true, name.c_str(),
+       StrCat("BinExport v2 files|*.BinExport|All files|", kAllFilesFilter)
+           .c_str(),
+@@ -202,7 +202,7 @@ void idaapi ButtonBinaryExport(TView** /* fields */, int) {
+   }
+ 
+   if (FileExists(filename) &&
+-        askyn_c(0, "'%s' already exists - overwrite?", filename) != 1) {
++        ask_yn(0, "'%s' already exists - overwrite?", filename) != 1) {
+       return;
+   }
+ 
+@@ -227,9 +227,9 @@ int ExportText(const std::string& filename) {
+   return eOk;
+ }
+ 
+-void idaapi ButtonTextExport(TView** /* fields */, int) {
++void idaapi ButtonTextExport(TWidget** /* fields */, int) {
+   const auto name(GetDefaultName(ExportMode::kText));
+-  const char* filename = askfile2_c(
++  const char* filename = ask_file(
+       /* forsave = */ true, name.c_str(),
+       StrCat("Text files|*.txt|All files|", kAllFilesFilter).c_str(),
+       "Export to Text");
+@@ -238,7 +238,7 @@ void idaapi ButtonTextExport(TView** /* fields */, int) {
+   }
+ 
+   if (FileExists(filename) &&
+-        askyn_c(0, "'%s' already exists - overwrite?", filename) != 1) {
++        ask_yn(0, "'%s' already exists - overwrite?", filename) != 1) {
+     return;
+   }
+ 
+@@ -263,9 +263,9 @@ int ExportStatistics(const std::string& filename) {
+   return eOk;
+ }
+ 
+-void idaapi ButtonStatisticsExport(TView** /* fields */, int) {
++void idaapi ButtonStatisticsExport(TWidget** /* fields */, int) {
+   const auto name(GetDefaultName(ExportMode::kStatistics));
+-  const char* filename = askfile2_c(
++  const char* filename = ask_file(
+       /* forsave = */ true, name.c_str(),
+       StrCat("BinExport Statistics|*.statistics|All files|", kAllFilesFilter)
+           .c_str(),
+@@ -275,7 +275,7 @@ void idaapi ButtonStatisticsExport(TView** /* fields */, int) {
+   }
+ 
+   if (FileExists(filename) &&
+-        askyn_c(0, "'%s' already exists - overwrite?", filename) != 1) {
++        ask_yn(0, "'%s' already exists - overwrite?", filename) != 1) {
+     return;
+   }
+ 
+@@ -327,35 +327,38 @@ int DoExport(ExportMode mode, std::string name,
+   }
+ }
+ 
+-static const char kBinExport2DiffIdcArgs[] = {VT_STR2, 0};
++static const char kBinExport2DiffIdcArgs[] = {VT_STR, 0};
+ error_t idaapi IdcBinExport2Diff(idc_value_t* argument, idc_value_t*) {
+   return DoExport(ExportMode::kBinary, std::string(argument[0].c_str()),
+                   /* connection_string */ "");
+ }
++static const ext_idcfunc_t kBinExport2DiffIdcDesc = {kBinExportDiff, IdcBinExport2Diff, kBinExport2DiffIdcArgs, NULL, 0, EXTFUN_BASE};
+ 
+-static const char kBinExport2TextIdcArgs[] = {VT_STR2, 0};
++static const char kBinExport2TextIdcArgs[] = {VT_STR, 0};
+ error_t idaapi IdcBinExport2Text(idc_value_t* argument, idc_value_t*) {
+   return DoExport(ExportMode::kText, std::string(argument[0].c_str()),
+                   /* connection_string */ "");
+ }
++static const ext_idcfunc_t kBinExport2TextIdcDesc = {kBinExportText, IdcBinExport2Text, kBinExport2TextIdcArgs, NULL, 0, EXTFUN_BASE};
+ 
+-static const char kBinExport2StatisticsIdcArgs[] = {VT_STR2, 0};
++static const char kBinExport2StatisticsIdcArgs[] = {VT_STR, 0};
+ error_t idaapi IdcBinExport2Statistics(idc_value_t* argument, idc_value_t*) {
+   return DoExport(ExportMode::kStatistics, std::string(argument[0].c_str()),
+                   /* connection_string */ "");
+ }
++static const ext_idcfunc_t kBinExport2StatisticsIdcDesc = {kBinExportStatistics, IdcBinExport2Statistics, kBinExport2StatisticsIdcArgs, NULL, 0, EXTFUN_BASE};
+ 
+-static const char kBinExport2SqlIdcArgs[] = {VT_STR2 /* Host */,
++static const char kBinExport2SqlIdcArgs[] = {VT_STR /* Host */,
+                                              VT_LONG /* Port */,
+-                                             VT_STR2 /* Database */,
+-                                             VT_STR2 /* Schema */,
+-                                             VT_STR2 /* User */,
+-                                             VT_STR2 /* Password */,
++                                             VT_STR /* Database */,
++                                             VT_STR /* Schema */,
++                                             VT_STR /* User */,
++                                             VT_STR /* Password */,
+                                              0};
+ error_t idaapi IdcBinExport2Sql(idc_value_t* argument, idc_value_t*) {
+-  if (argument[0].vtype != VT_STR2 || argument[1].vtype != VT_LONG ||
+-      argument[2].vtype != VT_STR2 || argument[3].vtype != VT_STR2 ||
+-      argument[4].vtype != VT_STR2 || argument[5].vtype != VT_STR2) {
++  if (argument[0].vtype != VT_STR || argument[1].vtype != VT_LONG ||
++      argument[2].vtype != VT_STR || argument[3].vtype != VT_STR ||
++      argument[4].vtype != VT_STR || argument[5].vtype != VT_STR) {
+     LOG(INFO) << "Error (BinExport2Sql): required arguments are missing or "
+                  "have the wrong type.";
+     LOG(INFO) << "Please call like so:";
+@@ -374,6 +377,7 @@ error_t idaapi IdcBinExport2Sql(idc_value_t* argument, idc_value_t*) {
+   }
+   return eOk;
+ }
++static const ext_idcfunc_t kBinExport2SqlIdcDesc = {kBinExportSql, IdcBinExport2Sql, kBinExport2SqlIdcArgs, NULL, 0, EXTFUN_BASE};
+ 
+ int idaapi PluginInit() {
+   LoggingOptions options;
+@@ -401,14 +405,10 @@ int idaapi PluginInit() {
+   addon_info.freeform = kCopyright;
+   register_addon(&addon_info);
+ 
+-  if (!set_idc_func_ex(kBinExportDiff, IdcBinExport2Diff,
+-                       kBinExport2DiffIdcArgs, EXTFUN_BASE) ||
+-      !set_idc_func_ex(kBinExportSql, IdcBinExport2Sql, kBinExport2SqlIdcArgs,
+-                       EXTFUN_BASE) ||
+-      !set_idc_func_ex(kBinExportText, IdcBinExport2Text,
+-                       kBinExport2TextIdcArgs, EXTFUN_BASE) ||
+-      !set_idc_func_ex(kBinExportStatistics, IdcBinExport2Statistics,
+-                       kBinExport2StatisticsIdcArgs, EXTFUN_BASE)) {
++  if (!add_idc_func(kBinExport2DiffIdcDesc) ||
++      !add_idc_func(kBinExport2StatisticsIdcDesc) ||
++      !add_idc_func(kBinExport2TextIdcDesc) ||
++      !add_idc_func(kBinExport2StatisticsIdcDesc)) {
+     LOG(INFO) << "Error registering IDC extension, skipping BinExport plugin";
+     return PLUGIN_SKIP;
+   }
+@@ -420,10 +420,10 @@ void idaapi PluginTerminate() {
+   ShutdownLogging();
+ }
+ 
+-void idaapi PluginRun(int argument) {
+-  if (strlen(database_idb) == 0) {
++bool idaapi PluginRun(size_t argument) {
++  if (strlen(get_path(PATH_TYPE_IDB)) == 0) {
+     info("Please open an IDB first.");
+-    return;
++    return false;
+   }
+ 
+   try {
+@@ -448,13 +448,15 @@ void idaapi PluginRun(int argument) {
+ 
+       DoExport(static_cast<ExportMode>(argument), module, connection_string);
+     } else {
+-      AskUsingForm_c(GetDialog(), ButtonBinaryExport, ButtonTextExport,
++      ask_form(GetDialog(), ButtonBinaryExport, ButtonTextExport,
+                      ButtonStatisticsExport);
+     }
+   } catch (const std::exception& error) {
+     LOG(INFO) << "export cancelled: " << error.what();
+     warning("export cancelled: %s\n", error.what());
+   }
++
++  return true;
+ }
+ 
+ #ifdef OPENSSL_IS_BORINGSSL
+diff --git a/ida/metapc.cc b/ida/metapc.cc
+index 1296740..312f6c8 100644
+--- a/ida/metapc.cc
++++ b/ida/metapc.cc
+@@ -38,17 +38,12 @@ bool IsStringInstruction(const std::string& mnemonic) {
+ }
+ 
+ int GetSegmentSize(const segment_t* segment = nullptr) {
+-  if (segment) {
+-    // IDA: 0 = 16, 1 = 32, 2 = 64
+-    return (16 << segment->bitness) >> 3;
++  if (!segment) {
++    segment = get_first_seg();
+   }
+-  if (cmd.auxpref & aux_use32) {
+-    return 4;
+-  }
+-  if (cmd.auxpref & aux_use64) {
+-    return 8;
+-  }
+-  return 2;
++
++  // IDA: 0 = 16, 1 = 32, 2 = 64
++  return (16 << segment->bitness) >> 3;
+ }
+ 
+ std::string GetSegmentSelector(const op_t& operand) {
+@@ -94,11 +89,11 @@ size_t GetSibOperandSize(Address address) {
+ // Warning: this function uses the global cmd!
+ std::string GetSibBase(const insn_t& instruction, const op_t& operand) {
+   const size_t opsize = GetSibOperandSize(instruction.ea);
+-  std::string name = GetRegisterName(x86_base(operand), opsize);
++  std::string name = GetRegisterName(x86_base(instruction, operand), opsize);
+   if (name.empty()) {
+     // Retry with size == 4, otherwise mmx instructions would try with 16 and
+     // fail.
+-    name = GetRegisterName(x86_base(operand), 4);
++    name = GetRegisterName(x86_base(instruction, operand), 4);
+   }
+   return name;
+ }
+@@ -106,7 +101,7 @@ std::string GetSibBase(const insn_t& instruction, const op_t& operand) {
+ std::string GetSibIndex(
+     const insn_t& instruction,
+     const op_t& operand) {  // @warning: this function uses the global cmd!
+-  const int index = x86_index(operand);
++  const int index = x86_index(instruction, operand);
+   size_t opsize = GetSibOperandSize(instruction.ea);
+   if (opsize <= 1) {
+     opsize = 4;  // @bug: can sib be 1 byte in size? I get an empty reg name in
+@@ -126,7 +121,7 @@ void HandlePhraseExpression(Expressions* expressions, FlowGraph* flow_graph,
+                             const insn_t& instruction, const op_t& operand,
+                             uint8_t operand_num) {
+   std::string base, index;
+-  if (ad16()) {  // https://zynamics.fogbugz.com/default.asp?2792
++  if (ad16(instruction)) {  // https://zynamics.fogbugz.com/default.asp?2792
+     switch (operand.phrase) {
+       case 0:
+         base = "bx";
+@@ -169,7 +164,7 @@ void HandlePhraseExpression(Expressions* expressions, FlowGraph* flow_graph,
+   Expression* expression = nullptr;
+   expressions->push_back(expression = Expression::Create(
+                              expression,
+-                             GetSizePrefix(GetOperandByteSize(operand)), 0,
++                             GetSizePrefix(GetOperandByteSize(instruction, operand)), 0,
+                              Expression::TYPE_SIZEPREFIX, 0));
+   expressions->push_back(
+       expression = Expression::Create(expression, GetSegmentSelector(operand),
+@@ -232,7 +227,7 @@ void HandleDisplacementExpression(const Address address,
+   Expression* register_expression = nullptr;
+   expressions->push_back(expression = Expression::Create(
+                              expression,
+-                             GetSizePrefix(GetOperandByteSize(operand)), 0,
++                             GetSizePrefix(GetOperandByteSize(instruction, operand)), 0,
+                              Expression::TYPE_SIZEPREFIX, pos));
+   expressions->push_back(
+       expression = Expression::Create(expression, GetSegmentSelector(operand),
+@@ -282,7 +277,7 @@ void HandleMemoryExpression(const Address address, const insn_t& instruction,
+                             const op_t& operand, uint8_t operand_num,
+                             Expressions* expressions, FlowGraph* flow_graph,
+                             TypeSystem* type_system) {
+-  const Address immediate = toEA(instruction.cs, operand.addr);
++  const Address immediate = to_ea(instruction.cs, operand.addr);
+   const Name name = GetName(address, immediate, operand_num, true);
+   const std::string index = GetSibIndex(instruction, operand);
+   const int scale = GetSibScale(operand);
+@@ -292,7 +287,7 @@ void HandleMemoryExpression(const Address address, const insn_t& instruction,
+   Expression* expression = nullptr;
+   expressions->push_back(expression = Expression::Create(
+                              expression,
+-                             GetSizePrefix(GetOperandByteSize(operand)), 0,
++                             GetSizePrefix(GetOperandByteSize(instruction, operand)), 0,
+                              Expression::TYPE_SIZEPREFIX, 0));
+   if (name.empty()) {
+     const std::string global =
+@@ -340,6 +335,11 @@ void HandleMemoryExpression(const Address address, const insn_t& instruction,
+ void HandleImmediate(const Address address, const op_t& operand,
+                      uint8_t operand_num, Expressions* expressions,
+                      TypeSystem* type_system) {
++  insn_t cmd;
++
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return;
++  }
+   Address immediate = operand.value;
+   Name name = GetName(address, operand.value, operand_num, true);
+   if (name.empty()) {
+@@ -352,7 +352,7 @@ void HandleImmediate(const Address address, const op_t& operand,
+   // opcode specification. BeaEngine follows the intel convention, leading to
+   // lots of spurious diffs between the two disassemblers. This here is an
+   // attempt at undoing the sign extension.
+-  size_t operand_size = GetOperandByteSize(operand);
++  size_t operand_size = GetOperandByteSize(cmd, operand);
+   if (operand.offb && cmd.size - operand.offb < operand_size) {
+     // Immediates are typically the last bytes of an instruction.
+     operand_size = cmd.size - operand.offb;
+@@ -377,12 +377,18 @@ Operands ParseOperandsIdaMetaPc(Address address, CallGraph* /* call_graph */,
+                                 FlowGraph* flow_graph,
+                                 TypeSystem* type_system) {
+   Operands operands;
++  insn_t cmd;
+   uint8_t skipped = 0;
++
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return operands;
++  }
++
+   for (uint8_t operand_position = 0; operand_position < UA_MAXOP;
+        ++operand_position) {
+     Expressions expressions;
+     const insn_t& instruction = cmd;
+-    const op_t& operand = cmd.Operands[operand_position];
++    const op_t& operand = cmd.ops[operand_position];
+     if (operand.type == o_void) {
+       break;
+     }
+@@ -404,7 +410,7 @@ Operands ParseOperandsIdaMetaPc(Address address, CallGraph* /* call_graph */,
+       {
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(expression = Expression::Create(
+                                   expression, GetExtendedRegisterName(operand),
+@@ -414,12 +420,12 @@ Operands ParseOperandsIdaMetaPc(Address address, CallGraph* /* call_graph */,
+       case o_reg:  // register
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+                 expression,
+-                GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++                GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+                 Expression::TYPE_REGISTER, 0));
+         break;
+       case o_mem:  // direct memory reference
+@@ -485,36 +491,37 @@ Operands ParseOperandsIdaMetaPc(Address address, CallGraph* /* call_graph */,
+ Instruction ParseInstructionIdaMetaPc(Address address, CallGraph* call_graph,
+                                       FlowGraph* flow_graph,
+                                       TypeSystem* type_system) {
+-  char buffer[128];
+-  memset(buffer, 0, sizeof(buffer));
++  qstring buffer;
++  insn_t cmd;
+   if (!IsCode(address) ||
+-      !ua_mnem(static_cast<ea_t>(address), buffer, sizeof(buffer))) {
++      !print_insn_mnem(&buffer, static_cast<ea_t>(address)) ||
++      !decode_insn(&cmd, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+-  std::string mnemonic(buffer);
++  std::string mnemonic(buffer.begin(), buffer.end());
+   if (mnemonic.empty()) {
+     return Instruction(address);
+   }
+ 
+   const Address next_instruction = address + cmd.size;
+-  const flags_t next_flags = getFlags(static_cast<ea_t>(next_instruction));
++  const flags_t next_flags = get_full_flags(static_cast<ea_t>(next_instruction));
+ 
+   // add suffix from hidden operand
+   if (IsStringInstruction(mnemonic)) {
+     for (size_t operand_position = 0;
+          operand_position < UA_MAXOP &&
+-             cmd.Operands[operand_position].type != o_void;
++             cmd.ops[operand_position].type != o_void;
+          ++operand_position) {
+       if (mnemonic == "outs" && operand_position != 1) {
+         continue;
+       }
+-      const op_t& operand = cmd.Operands[operand_position];
++      const op_t& operand = cmd.ops[operand_position];
+       if (!(operand.flags & OF_SHOW)) {  // hidden operand, get suffix from it
+-        if (operand.dtyp == dt_byte) {
++        if (operand.dtype == dt_byte) {
+           mnemonic += "b";
+-        } else if (operand.dtyp == dt_word) {
++        } else if (operand.dtype == dt_word) {
+           mnemonic += "w";
+-        } else if (operand.dtyp == dt_dword) {
++        } else if (operand.dtype == dt_dword) {
+           mnemonic += "d";
+         } else {
+           // default add machine word size suffix. IDA sometimes omits the
+@@ -542,6 +549,6 @@ Instruction ParseInstructionIdaMetaPc(Address address, CallGraph* call_graph,
+   }
+ 
+   return Instruction(
+-      address, isFlow(next_flags) ? next_instruction : 0, cmd.size, mnemonic,
++      address, is_flow(next_flags) ? next_instruction : 0, cmd.size, mnemonic,
+       ParseOperandsIdaMetaPc(address, call_graph, flow_graph, type_system));
+ }
+diff --git a/ida/mips.cc b/ida/mips.cc
+index ae61b90..375cfe8 100644
+--- a/ida/mips.cc
++++ b/ida/mips.cc
+@@ -107,13 +107,19 @@ std::string GetFloatingPointRegisterName(const size_t register_id) {
+ 
+ Operands DecodeOperandsMips(const Address address) {
+   Operands operands;
++  insn_t cmd;
++
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return operands;
++  }
++
+   for (uint8_t operand_position = 0;
+        operand_position < UA_MAXOP &&
+-           cmd.Operands[operand_position].type != o_void;
++           cmd.ops[operand_position].type != o_void;
+        ++operand_position) {
+     Expressions expressions;
+     // const insn_t & instruction = cmd;
+-    const op_t& operand = cmd.Operands[operand_position];
++    const op_t& operand = cmd.ops[operand_position];
+ 
+     Expression* expression = 0;
+     switch (operand.type) {
+@@ -122,12 +128,12 @@ Operands DecodeOperandsMips(const Address address) {
+       case o_reg:  // register
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+                 expression,
+-                GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++                GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+                 Expression::TYPE_REGISTER, 0));
+         break;
+       case o_mem: {  // direct memory reference
+@@ -138,7 +144,7 @@ Operands DecodeOperandsMips(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "[", 0,
+@@ -154,18 +160,18 @@ Operands DecodeOperandsMips(const Address address) {
+         // @todo: test! I have not encountered this case yet!
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "+", 0,
+                                             Expression::TYPE_OPERATOR, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.specflag1, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.specflag1, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 1));
+         break;
+       case o_displ: {  // imm(reg)
+@@ -174,14 +180,14 @@ Operands DecodeOperandsMips(const Address address) {
+             GetName(address, operand.addr, operand_position, false);
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "+", 0,
+                                             Expression::TYPE_OPERATOR, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+         expressions.push_back(Expression::Create(
+             expression, name.name, immediate,
+@@ -194,7 +200,7 @@ Operands DecodeOperandsMips(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -211,7 +217,7 @@ Operands DecodeOperandsMips(const Address address) {
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -234,7 +240,7 @@ Operands DecodeOperandsMips(const Address address) {
+         if (cmd.auxpref & 0x5) {
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+@@ -243,7 +249,7 @@ Operands DecodeOperandsMips(const Address address) {
+         } else {
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+@@ -278,13 +284,14 @@ Instruction ParseInstructionIdaMips(Address address,
+                                     CallGraph* /* call_graph */,
+                                     FlowGraph* /* flow_graph */,
+                                     TypeSystem* /* type_system */) {
+-  char buffer[128];
+-  memset(buffer, 0, sizeof(buffer));
++  qstring buffer;
++  insn_t cmd;
+   if (!IsCode(address) ||
+-      !ua_mnem(static_cast<ea_t>(address), buffer, sizeof(buffer))) {
++      !print_insn_mnem(&buffer, static_cast<ea_t>(address)) ||
++      !decode_insn(&cmd, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+-  std::string mnemonic(buffer);
++  std::string mnemonic(buffer.begin(), buffer.end());
+   if (mnemonic.empty()) {
+     return Instruction(address);
+   }
+@@ -313,7 +320,7 @@ Instruction ParseInstructionIdaMips(Address address,
+     }
+   } else if (cmd.itype == MIPS_pmfhl) {
+     static const char* const pmfhl_p[] = {".lw", ".uw", ".slw", ".lh", ".sh"};
+-    int fmt = (get_long(cmd.ea) >> 6) & 0x1F;
++    int fmt = (get_dword(cmd.ea) >> 6) & 0x1F;
+     mnemonic += pmfhl_p[fmt];
+   }
+ 
+diff --git a/ida/names.cc b/ida/names.cc
+index f7956df..575c6b8 100644
+--- a/ida/names.cc
++++ b/ida/names.cc
+@@ -64,7 +64,7 @@ enum Architecture {
+ 
+ bool IsCode(Address address) {
+   const uchar segment = segtype(address);
+-  return isCode(getFlags(address)) &&
++  return is_code(get_full_flags(address)) &&
+          (segment == SEG_CODE || segment == SEG_NORM ||
+           // Some processor modules label code segments with SEG_DATA.
+           ((ph.id == PLFM_DALVIK || ph.id == PLFM_M32R) &&
+@@ -83,7 +83,7 @@ Address GetImageBase() {
+ }
+ 
+ Architecture GetArchitecture() {
+-  std::string architecture(inf.procName);
++  std::string architecture(inf.procname);
+   if (architecture == "metapc") {
+     return kX86;
+   }
+@@ -151,7 +151,12 @@ std::string GetModuleName() {
+ // functions)) in particular, note that there may not be a flow reference to
+ // the next instruction
+ bool IsUnconditionalJump(ea_t address) {
+-  if (is_indirect_jump_insn(address) && GetArchitecture() == kX86) {
++  insn_t cmd;
++  if (!decode_insn(&cmd, address)) {
++    return false;
++  }
++
++  if (is_indirect_jump_insn(cmd) && GetArchitecture() == kX86) {
+     return true;
+   }
+   if (GetArchitecture() == kMips &&
+@@ -186,34 +191,23 @@ ModuleMap InitModuleMap() {
+ 
+   // TODO(user) We should probably rewrite this code using
+   // get_import_module_qty and get_import_module_name and enum_import_names.
+-  const netnode& imported_modules = import_node;
+-  for (uval_t module_num = imported_modules.alt1st(); module_num != BADNODE;
+-       module_num = imported_modules.altnxt(module_num)) {
+-    enum { BUFFER_SIZE = MAXSTR };
+-    char buffer[BUFFER_SIZE];
+-    memset(buffer, 0, BUFFER_SIZE);
++  for (int idx = 0, end = get_import_module_qty(); idx < end; ++idx) {
++    qstring buffer;
+     std::string module_name("unnamed module");
+-    if (imported_modules.supstr(module_num, buffer, BUFFER_SIZE) > 0) {
+-      module_name = buffer;
+-    } else {
++    if (get_import_module_name(&buffer, idx)) {
++      module_name.assign(buffer.begin(), buffer.end());
++    }
++    else {
+       continue;  // do not enter non-imported modules into the list
+     }
+ 
+     // get the module node (in fact, netnode is just a 32-bit number)
+-    const netnode module_node = imported_modules.altval(module_num);
+-
+-    // for all imported by ORDINAL functions
+-    for (uval_t ordinal = module_node.alt1st(); ordinal != BADNODE;
+-         ordinal = module_node.altnxt(ordinal)) {
+-      const ea_t address = module_node.altval(ordinal);
+-      modules[address] = module_name;
+-    }
+-
+-    // for all imported by NAME functions
+-    for (ea_t address = module_node.sup1st(); address != BADADDR;
+-         address = module_node.supnxt(address)) {
+-      modules[address] = module_name;
+-    }
++    enum_import_names(idx, [](ea_t ea, const char* name, uval_t ord, void* param) -> int {
++        if (name != NULL && ord != 0) {
++          (*static_cast<ModuleMap *>(param))[ea] = name;
++        }
++        return 1;
++    }, &modules);
+   }
+   return modules;
+ }
+@@ -228,18 +222,28 @@ std::string GetModuleName(Address address, const ModuleMap& modules) {
+ 
+ int GetOriginalIdaLine(const Address address, char* buffer,
+                        size_t buffer_size) {
+-  generate_disasm_line((ea_t)address, buffer, buffer_size, 0);
+-  return tag_remove(buffer, buffer, buffer_size);
++  qstring str;
++  qstring str_notag;
++  generate_disasm_line(&str, static_cast<ea_t>(address), 0);
++  tag_remove(&str_notag, str);
++  size_t size = std::min(buffer_size, str_notag.size());
++  strncpy(buffer, str_notag.c_str(), size);
++  return size;
+ }
+ 
+ std::string GetMnemonic(const Address address) {
+-  enum { kBufferSize = 32 };
+-  char buffer[kBufferSize] = {0};
+-  ua_mnem(address, buffer, kBufferSize);
+-  return buffer;
++  qstring buffer;
++  print_insn_mnem(&buffer, address);
++  return std::string(buffer.begin(), buffer.end());
+ }
+ 
+-bool IsCall(ea_t address) { return is_call_insn(address); }
++bool IsCall(ea_t address) { 
++  insn_t cmd;
++  if (!decode_insn(&cmd, address)) {
++    return false;
++  }
++  return is_call_insn(cmd); 
++}
+ 
+ // Utility function to render hex values as shown in IDA.
+ std::string IdaHexify(int value) {
+@@ -255,8 +259,8 @@ std::string GetSizePrefix(const size_t size_in_bytes) {
+   return "b" + std::to_string(size_in_bytes);
+ }
+ 
+-size_t GetOperandByteSize(const op_t& operand) {
+-  switch (operand.dtyp) {
++size_t GetOperandByteSize(const insn_t& cmd, const op_t& operand) {
++  switch (operand.dtype) {
+     case dt_byte:
+       return 1;  // 8 bit
+     case dt_code:
+@@ -281,7 +285,7 @@ size_t GetOperandByteSize(const op_t& operand) {
+     default: {
+       std::stringstream stream;
+       stream << __FUNCTION__ << ": Invalid operand type ("
+-             << static_cast<int>(operand.dtyp) << ") at address " << std::hex
++             << static_cast<int>(operand.dtype) << ") at address " << std::hex
+              << cmd.ea << ".";
+       throw std::runtime_error(stream.str());
+     }
+@@ -310,10 +314,10 @@ std::string GetStringReference(ea_t address) {
+   }
+ 
+   while (!xrefs.iscode) {
+-    if ((xrefs.type == dr_O) && (isASCII(getFlags(xrefs.to)))) {
+-      size_t length = get_max_ascii_length(xrefs.to, ASCSTR_C);
++    if ((xrefs.type == dr_O) && (is_strlit(get_full_flags(xrefs.to)))) {
++      size_t length = get_max_strlit_length(xrefs.to, STRTYPE_C);
+       if (length == 2) {
+-        length = get_max_ascii_length(xrefs.to, ASCSTR_UNICODE);
++        length = get_max_strlit_length(xrefs.to, STRTYPE_C_16);
+       }
+ 
+       std::string value(length, ' ');
+@@ -331,14 +335,14 @@ std::string GetStringReference(ea_t address) {
+ }
+ 
+ bool IsStackVariable(Address address, uint8_t operand_num) {
+-  flags_t flags = get_flags_novalue(static_cast<ea_t>(address));
+-  return isStkvar(flags, operand_num);
++  flags_t flags = get_flags(static_cast<ea_t>(address));
++  return is_stkvar(flags, operand_num);
+ }
+ 
+ bool IsStructVariable(Address address, uint8_t operand_num) {
+-  flags_t flags = get_flags_novalue(static_cast<ea_t>(address));
+-  return (operand_num == 0 && isStroff0(flags)) ||
+-         (operand_num == 1 && isStroff1(flags));
++  flags_t flags = get_flags(static_cast<ea_t>(address));
++  return (operand_num == 0 && is_stroff0(flags)) ||
++         (operand_num == 1 && is_stroff1(flags));
+ }
+ 
+ // Returns the variable name of either a stack variable or a
+@@ -347,9 +351,15 @@ std::string GetVariableName(Address address, uint8_t operand_num) {
+   if (!IsStackVariable(address, operand_num)) {
+     return "";
+   }
++  
++  insn_t cmd;
++
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return "";
++  }
+ 
+   const member_t* stack_variable =
+-      get_stkvar(cmd.Operands[operand_num], cmd.Operands[operand_num].addr, 0);
++      get_stkvar(0, cmd, cmd.ops[operand_num], cmd.ops[operand_num].addr);
+   if (!stack_variable) {
+     return "";
+   }
+@@ -367,7 +377,7 @@ std::string GetVariableName(Address address, uint8_t operand_num) {
+     }
+ 
+     const ea_t offset =
+-        calc_stkvar_struc_offset(function, address, operand_num);
++        calc_stkvar_struc_offset(function, cmd, operand_num);
+     if (offset == BADADDR) {
+       return name;
+     }
+@@ -381,8 +391,8 @@ std::string GetVariableName(Address address, uint8_t operand_num) {
+     tid_t id = 0;
+     adiff_t disp = 0;
+     adiff_t delta = 0;
+-    if (get_struct_operand(address, operand_num, &id, &disp, &delta) &&
+-        cmd.Operands[operand_num].reg == 4) {
++    if (get_struct_operand(&disp, &delta, &id, address, operand_num) &&
++        cmd.ops[operand_num].reg == 4) {
+       int delta = get_spd(function, address);
+       delta = -delta - function->frregs;
+       if (delta) {
+@@ -392,7 +402,7 @@ std::string GetVariableName(Address address, uint8_t operand_num) {
+       // TODO(user): This must be recursive for nested structs.
+       if (const struc_t* structure = get_struc(id)) {
+         if (const member_t* member = get_member(structure, disp)) {
+-          qstring ida_name(get_member_name2(member->id));
++          qstring ida_name(get_member_name(member->id));
+           std::string member_name(ida_name.c_str(), ida_name.length());
+           stream << name << "." << member_name << disp;
+           if (delta) {
+@@ -422,7 +432,7 @@ std::string GetGlobalStructureName(Address address, Address instance_address,
+   adiff_t disp = 0;
+   adiff_t delta = 0;
+ 
+-  int num_structs = get_struct_operand(address, operand_num, id, &disp, &delta);
++  int num_structs = get_struct_operand(&disp, &delta, id, address, operand_num);
+   if (num_structs > 0) {
+     // Special case for the first index - this may be an instance name instead
+     // of a type name.
+@@ -431,7 +441,7 @@ std::string GetGlobalStructureName(Address address, Address instance_address,
+       // First try to get a global variable instance name.
+       // Second, fall back to just the structure type name.
+       qstring ida_name;
+-      if (get_true_name(&ida_name, instance_address - disp) ||
++      if (get_name(&ida_name, instance_address - disp) ||
+           get_struc_name(&ida_name, id[0])) {
+         instance_name.assign(ida_name.c_str(), ida_name.length());
+       }
+@@ -442,7 +452,7 @@ std::string GetGlobalStructureName(Address address, Address instance_address,
+     for (const member_t* member = get_member(structure, disp);
+          member != nullptr;
+          member = get_member(structure, disp -= member->soff)) {
+-      qstring ida_name(get_member_name2(member->id));
++      qstring ida_name(get_member_name(member->id));
+       instance_name += "." + std::string(ida_name.c_str(), ida_name.length());
+       structure = get_sptr(member);
+     }
+@@ -451,15 +461,15 @@ std::string GetGlobalStructureName(Address address, Address instance_address,
+ }
+ 
+ std::string GetName(Address address, bool user_names_only) {
+-  if (!user_names_only || has_user_name(getFlags(static_cast<ea_t>(address)))) {
+-    qstring ida_name(get_true_name(static_cast<ea_t>(address)));
++  if (!user_names_only || has_user_name(get_full_flags(static_cast<ea_t>(address)))) {
++    qstring ida_name(get_name(static_cast<ea_t>(address)));
+     return std::string(ida_name.c_str(), ida_name.length());
+   }
+   return "";
+ }
+ 
+ std::string GetDemangledName(Address address) {
+-  if (has_user_name(getFlags(static_cast<ea_t>(address)))) {
++  if (has_user_name(get_full_flags(static_cast<ea_t>(address)))) {
+     qstring ida_name(get_short_name(static_cast<ea_t>(address)));
+     return std::string(ida_name.c_str(), ida_name.length());
+   }
+@@ -467,11 +477,9 @@ std::string GetDemangledName(Address address) {
+ }
+ 
+ std::string GetRegisterName(size_t index, size_t segment_size) {
+-  enum { kBufferSize = MAXSTR };
+-  char buffer[kBufferSize];
+-  memset(buffer, 0, kBufferSize);
+-  if (get_reg_name(index, segment_size, buffer, kBufferSize) != -1) {
+-    return buffer;
++  qstring buffer;
++  if (get_reg_name(&buffer, index, segment_size) != -1) {
++    return std::string(buffer.begin(), buffer.end());
+   }
+   // Do not return empty string due to assertion fail in database_writer.cc
+   return "<bad register>";
+@@ -589,13 +597,14 @@ void AnalyzeFlow(const Address address, Instruction* instruction,
+               TYPE_UNCONDITIONAL);
+           handled = true;
+         } else {
++          insn_t cmd;
+           Address next_address = instruction->GetNextInstruction();
+           if (GetArchitecture() == kMips) {
+             // look ahead one instruction
+-            decode_insn(static_cast<ea_t>(next_address));
++            decode_insn(&cmd, static_cast<ea_t>(next_address));
+             next_address += cmd.size;
+             // reset global cmd structure to original instruction
+-            decode_insn(static_cast<ea_t>(address));
++            decode_insn(&cmd, static_cast<ea_t>(address));
+           }
+ 
+           flow_graph->AddEdge(FlowGraphEdge(source_address, next_address,
+@@ -650,27 +659,28 @@ void AnalyzeFlow(const Address address, Instruction* instruction,
+ 
+ std::string GetBytes(const Instruction& instruction) {
+   std::string bytes(instruction.GetSize(), '\0');
+-  get_many_bytes(static_cast<ea_t>(instruction.GetAddress()), &(bytes[0]),
+-                 instruction.GetSize());
++  get_bytes(&(bytes[0]),
++            instruction.GetSize(), 
++            static_cast<ea_t>(instruction.GetAddress()));
+   return bytes;
+ }
+ 
+ bool idaapi HasNoValue(flags_t flags, void* /* ud */) {
+-  return !hasValue(flags);
++  return !has_value(flags);
+ }
+ 
+ // Returns the raw bytes that are contained within a segment.
+ std::vector<Byte> GetSectionBytes(ea_t segment_start_address) {
+   std::vector<Byte> bytes;
+   const segment_t* ida_segment = getseg(segment_start_address);
+-  if (ida_segment && isLoaded(ida_segment->startEA)) {
++  if (ida_segment && is_loaded(ida_segment->start_ea)) {
+     const ea_t undefined_bytes =
+-        nextthat(ida_segment->startEA, ida_segment->endEA, HasNoValue,
++        next_that(ida_segment->start_ea, ida_segment->end_ea, HasNoValue,
+                  nullptr /* user data */);
+     bytes.resize(
+-        (undefined_bytes == BADADDR ? ida_segment->endEA : undefined_bytes) -
+-        ida_segment->startEA);
+-    get_many_bytes(ida_segment->startEA, &bytes[0], bytes.size());
++        (undefined_bytes == BADADDR ? ida_segment->end_ea : undefined_bytes) -
++        ida_segment->start_ea);
++    get_bytes(&bytes[0], bytes.size(), ida_segment->start_ea);
+   }
+   return bytes;
+ }
+@@ -702,12 +712,12 @@ void AnalyzeFlowIda(EntryPoints* entry_points, const ModuleMap* modules,
+   AddressSpace flags;
+   for (int i = 0; i < get_segm_qty(); ++i) {
+     const segment_t* segment = getnseg(i);
+-    address_space.AddMemoryBlock(segment->startEA,
+-                                 GetSectionBytes(segment->startEA),
++    address_space.AddMemoryBlock(segment->start_ea,
++                                 GetSectionBytes(segment->start_ea),
+                                  GetPermissions(segment));
+     flags.AddMemoryBlock(
+-        segment->startEA,
+-        AddressSpace::MemoryBlock(size_t(segment->endEA - segment->startEA)),
++        segment->start_ea,
++        AddressSpace::MemoryBlock(size_t(segment->end_ea - segment->start_ea)),
+         GetPermissions(segment));
+   }
+ 
+@@ -854,16 +864,15 @@ void AnalyzeFlowIda(EntryPoints* entry_points, const ModuleMap* modules,
+ }
+ 
+ void GetRegularComments(Address address, Comments* comments) {
+-  enum { kBufferSize = 4096 };
+-  char buffer[kBufferSize] = {0};
+-  if (get_cmt(address, false, buffer, kBufferSize) > 0) {
++  qstring buffer;
++  if (get_cmt(&buffer, address, false) > 0) {
+     comments->emplace_back(address, UA_MAXOP + 1,
+-                           CallGraph::CacheString(buffer), Comment::REGULAR,
++                           CallGraph::CacheString(std::string(buffer.begin(), buffer.end())), Comment::REGULAR,
+                            false);
+   }
+-  if (get_cmt(address, true, buffer, kBufferSize) > 0) {
++  if (get_cmt(&buffer, address, true) > 0) {
+     comments->emplace_back(address, UA_MAXOP + 2,
+-                           CallGraph::CacheString(buffer), Comment::REGULAR,
++                           CallGraph::CacheString(std::string(buffer.begin(), buffer.end())), Comment::REGULAR,
+                            true);
+   }
+ }
+@@ -872,8 +881,8 @@ void GetEnumComments(Address address,
+                      Comments* comments) {  // @bug: there is an get_enum_cmt
+                                             // function in IDA as well!
+   unsigned char serial;
+-  if (isEnum0(getFlags(address))) {
+-    if (int id = get_enum_id(address, 0, &serial) != BADNODE) {
++  if (is_enum0(get_full_flags(address))) {
++    if (int id = get_enum_id(&serial, address, 0) != BADNODE) {
+       qstring ida_name(get_enum_name(id));
+       comments->emplace_back(address, 0,
+                              CallGraph::CacheString(std::string(
+@@ -881,8 +890,8 @@ void GetEnumComments(Address address,
+                              Comment::ENUM, false);
+     }
+   }
+-  if (isEnum1(getFlags(address))) {
+-    if (int id = get_enum_id(address, 1, &serial) != BADNODE) {
++  if (is_enum1(get_full_flags(address))) {
++    if (int id = get_enum_id(&serial, address, 1) != BADNODE) {
+       qstring ida_name(get_enum_name(id));
+       comments->emplace_back(address, 1,
+                              CallGraph::CacheString(std::string(
+@@ -925,32 +934,29 @@ void GetLineComments(Address address, Comments* comments) {
+ 
+ void GetFunctionComments(Address address, Comments* comments) {
+   if (func_t* function = get_func(address)) {
+-    if (function->startEA == address) {
+-      char* comment = get_func_cmt(function, false);
+-      if (comment) {
++    if (function->start_ea == address) {
++      qstring comment;
++      if (get_func_cmt(&comment, function, false) != -1) {
+         comments->emplace_back(address, UA_MAXOP + 5,
+-                               CallGraph::CacheString(comment),
++                               CallGraph::CacheString(std::string(comment.begin(), comment.end())),
+                                Comment::FUNCTION, false);
+       }
+-      qfree(reinterpret_cast<void*>(comment));
+-      comment = get_func_cmt(function, true);
+-      if (comment) {
++      if (get_func_cmt(&comment, function, true) != -1) {
+         comments->emplace_back(address, UA_MAXOP + 6,
+-                               CallGraph::CacheString(comment),
++                               CallGraph::CacheString(std::string(comment.begin(), comment.end())),
+                                Comment::FUNCTION, true);
+       }
+-      qfree(reinterpret_cast<void*>(comment));
+     }
+   }
+ }
+ 
+ void GetLocationNames(Address address, Comments* comments) {
+   func_t* function = get_func(address);
+-  if (function && function->startEA == address &&
+-      has_user_name(getFlags(address))) {
++  if (function && function->start_ea == address &&
++      has_user_name(get_full_flags(address))) {
+     // TODO(cblichmann): get_short_name -> use demangled names for display,
+     //                   but port mangled names.
+-    qstring ida_name(get_true_name(address));
++    qstring ida_name(get_name(address));
+     comments->emplace_back(address, UA_MAXOP + 7,
+                            CallGraph::CacheString(std::string(
+                                ida_name.c_str(), ida_name.length())),
+@@ -963,8 +969,8 @@ void GetGlobalReferences(Address address, Comments* comments) {
+   xrefblk_t xb;
+   for (bool ok = xb.first_from(address, XREF_DATA); ok; ok = xb.next_from(),
+             ++count) {  // xb.to - contains the referenced address
+-    qstring ida_name(get_true_name(xb.to));
+-    if (ida_name.empty() || has_dummy_name(getFlags(address))) {
++    qstring ida_name(get_name(xb.to));
++    if (ida_name.empty() || has_dummy_name(get_full_flags(address))) {
+       continue;
+     }
+ 
+@@ -1002,7 +1008,7 @@ class FunctionCache {
+       }
+ 
+       const ea_t offset = member->soff;
+-      qstring ida_name(get_member_name2(member->id));
++      qstring ida_name(get_member_name(member->id));
+       if (!ida_name.empty()) {
+         i += std::max(static_cast<asize_t>(1), get_member_size(member));
+         lastSuccess = i;
+@@ -1027,13 +1033,18 @@ void GetLocalReferences(ea_t address, Comments* comments) {
+     return;
+   }
+ 
++  insn_t cmd;
++  if (!decode_insn(&cmd, address)) {
++    return;
++  }
++
+   if (cache.function != function) {
+     cache = FunctionCache(function);
+   }
+ 
+   for (size_t operand_num = 0; operand_num < UA_MAXOP; ++operand_num) {
+     const ea_t offset =
+-        calc_stkvar_struc_offset(function, address, operand_num);
++        calc_stkvar_struc_offset(function, cmd, operand_num);
+     if (offset == BADADDR) {
+       continue;
+     }
+diff --git a/ida/names.h b/ida/names.h
+index 0119bbb..4dc1d24 100644
+--- a/ida/names.h
++++ b/ida/names.h
+@@ -28,6 +28,7 @@ class CallGraph;
+ class FlowGraph;
+ class Writer;
+ class op_t;
++class insn_t;
+ 
+ struct Name {
+   Name(const std::string& name, Expression::Type type)
+@@ -59,7 +60,7 @@ std::string GetArchitectureName();
+ int GetArchitectureBitness();
+ 
+ std::string GetSizePrefix(const size_t size_in_bytes);
+-size_t GetOperandByteSize(const op_t& operand);
++size_t GetOperandByteSize(const insn_t& cmd, const op_t& operand);
+ 
+ size_t GetSegmentSize(const Address address);
+ int GetOriginalIdaLine(const Address address, char* buffer, size_t buffer_size);
+diff --git a/ida/ppc.cc b/ida/ppc.cc
+index b3d512d..fdb6356 100644
+--- a/ida/ppc.cc
++++ b/ida/ppc.cc
+@@ -391,13 +391,17 @@ typedef std::list<const std::string*> TOperandStrings;
+ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+                            const Address address) {
+   Operands operands;
++  insn_t cmd;
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return operands;
++  }
+   for (uint8_t operand_position = 0;
+        operand_position < UA_MAXOP &&
+-           cmd.Operands[operand_position].type != o_void;
++           cmd.ops[operand_position].type != o_void;
+        ++operand_position) {
+     Expressions expressions;
+     const insn_t& instruction = cmd;
+-    const op_t& operand = cmd.Operands[operand_position];
++    const op_t& operand = cmd.ops[operand_position];
+ 
+     Expression* expression = 0;
+     switch (operand.type) {
+@@ -407,7 +411,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+       {
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+@@ -418,12 +422,12 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+       {
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+                 expression,
+-                GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++                GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+                 Expression::TYPE_REGISTER, 0));
+       } break;
+       case o_mem:  // direct memory reference
+@@ -433,7 +437,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "[", 0,
+@@ -452,7 +456,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+             GetName(address, operand.addr, operand_position, false);
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "[", 0,
+@@ -462,7 +466,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+                                             Expression::TYPE_OPERATOR, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+         expressions.push_back(Expression::Create(
+             expression, name.name, operand.addr,
+@@ -475,7 +479,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -491,7 +495,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+ 
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -503,7 +507,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+       {
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(
+@@ -515,11 +519,11 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+       {
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+         // Note: IDA returns what is really two operands in a single op. That's
+         // why we start a new one here
+@@ -528,11 +532,11 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+         expressions.clear();
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(Expression::Create(
+             expression,
+-            GetRegisterName(operand.specflag1, GetOperandByteSize(operand)), 0,
++            GetRegisterName(operand.specflag1, GetOperandByteSize(cmd, operand)), 0,
+             Expression::TYPE_REGISTER, 0));
+       } break;
+       case o_idpspec2: {
+@@ -547,18 +551,18 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+         if (instruction.auxpref & PPC_aux_sh) {
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(Expression::Create(
+               expression, "", operand.reg, Expression::TYPE_IMMEDIATE_INT, 0));
+         } else {
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 0));
+           expressions.push_back(Expression::Create(
+               expression,
+-              GetRegisterName(operand.reg, GetOperandByteSize(operand)), 0,
++              GetRegisterName(operand.reg, GetOperandByteSize(cmd, operand)), 0,
+               Expression::TYPE_REGISTER, 0));
+         }
+         if (instruction.auxpref & PPC_aux_mb) {
+@@ -567,7 +571,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+           expressions.clear();
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 1));
+           expressions.push_back(
+               Expression::Create(expression, "", operand.specflag1,
+@@ -579,7 +583,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+           expressions.clear();
+           expressions.push_back(expression = Expression::Create(
+                                     expression,
+-                                    GetSizePrefix(GetOperandByteSize(operand)),
++                                    GetSizePrefix(GetOperandByteSize(cmd, operand)),
+                                     0, Expression::TYPE_SIZEPREFIX, 2));
+           expressions.push_back(
+               Expression::Create(expression, "", operand.specflag2,
+@@ -591,7 +595,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+          // x.reg...
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(
+             expression = Expression::Create(expression, "", operand.reg,
+@@ -603,7 +607,7 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+         // here
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+-                                  GetSizePrefix(GetOperandByteSize(operand)), 0,
++                                  GetSizePrefix(GetOperandByteSize(cmd, operand)), 0,
+                                   Expression::TYPE_SIZEPREFIX, 0));
+         expressions.push_back(expression = Expression::Create(
+                                   expression,
+@@ -627,13 +631,14 @@ Operands DecodeOperandsPpc(const std::string& /* mnemonic */,
+ Instruction ParseInstructionIdaPpc(Address address, CallGraph* /* call_graph */,
+                                    FlowGraph* /* flow_graph */,
+                                    TypeSystem* /* type_system */) {
+-  char buffer[128];
+-  memset(buffer, 0, sizeof(buffer));
++  qstring buffer;
++  insn_t cmd;
+   if (!IsCode(address) ||
+-      !ua_mnem(static_cast<ea_t>(address), buffer, sizeof(buffer))) {
++      !print_insn_mnem(&buffer, static_cast<ea_t>(address)) ||
++      !decode_insn(&cmd, static_cast<ea_t>(address))) {
+     return Instruction(address);
+   }
+-  std::string mnemonic(buffer);
++  std::string mnemonic(buffer.begin(), buffer.end());
+   if (mnemonic.empty()) {
+     return Instruction(address);
+   }
+diff --git a/ida/types_container.cc b/ida/types_container.cc
+index 58b47ea..56d7108 100644
+--- a/ida/types_container.cc
++++ b/ida/types_container.cc
+@@ -103,7 +103,7 @@ struct FrameIterator
+     if (start_index >= function_count) {
+       return BADADDR;
+     }
+-    if (!get_frame(getn_func(start_index)->startEA)) {
++    if (!get_frame(getn_func(start_index)->start_ea)) {
+       return next_valid_index(start_index, function_count);
+     }
+     return start_index;
+@@ -115,7 +115,7 @@ struct FrameIterator
+     }
+     while (index < function_count - 1) {
+       ++index;
+-      if (get_frame(getn_func(index)->startEA)) {
++      if (get_frame(getn_func(index)->start_ea)) {
+         return index;
+       }
+     }
+@@ -131,7 +131,7 @@ struct FrameIterator
+   }
+ 
+   struc_t& dereference() const {
+-    struc_t* frame_struct = get_frame(getn_func(current_index_)->startEA);
++    struc_t* frame_struct = get_frame(getn_func(current_index_)->start_ea);
+     if (!frame_struct) {
+       throw std::runtime_error("Out of bounds access in FrameIterator.");
+     }
+@@ -309,8 +309,7 @@ const struc_t* GetIdaStruct(Address address, size_t operand_num,
+                             adiff_t* offset) {
+   tid_t path[MAXSTRUCPATH];
+   adiff_t delta;
+-  if (get_struct_operand(static_cast<ea_t>(address), operand_num, path, offset,
+-                         &delta)) {
++  if (get_struct_operand(offset, &delta, path, static_cast<ea_t>(address), operand_num)) {
+     // For now we only need to consider the root base type together with an
+     // offset in order to uniquely address members in nested structures, so
+     // we merely return the first element of that path. This will change once
+@@ -389,7 +388,7 @@ const BaseType* IdaTypesContainer::GetBuiltinType(size_t type_size) const {
+ const BaseType* IdaTypesContainer::CreateOrGetBaseTypes(
+     const member_t* member, BaseType::MemberTypes* member_types) {
+   tinfo_t tif;
+-  if (!get_member_tinfo2(member, &tif) && !guess_tinfo2(member->id, &tif)) {
++  if (!get_member_tinfo(&tif, member) && !guess_tinfo(&tif, member->id)) {
+     return nullptr;
+   }
+   if (tif.is_array()) {
+@@ -415,7 +414,7 @@ MemberType* IdaTypesContainer::CreateMember(
+   new_member->parent_type = parent_struct;
+ 
+   qstring ida_name;
+-  if (get_member_name2(&ida_name, ida_member->id)) {
++  if (get_member_name(&ida_name, ida_member->id)) {
+     new_member->name.assign(ida_name.c_str(), ida_name.length());
+   } else {
+     LOG(INFO) << "Unable to determine name for member with id: "
+@@ -557,8 +556,13 @@ TypesContainer::TypeReference IdaTypesContainer::CreateStackReference(
+   if (!function) {
+     return TypeReference::CreateEmptyReference();
+   }
++  insn_t cmd;
++  if (!decode_insn(&cmd, static_cast<ea_t>(address))) {
++    return TypeReference::CreateEmptyReference();
++  }
++
+   const int structure_offset =
+-      calc_stkvar_struc_offset(function, address, operand_num);
++      calc_stkvar_struc_offset(function, cmd, operand_num);
+   // final_offset describes the offset that we need to store for the
+   // substitution so BinNavi can determine the referenced member as:
+   // member_offset = displacement + final_offset
+@@ -570,10 +574,10 @@ TypesContainer::TypeReference IdaTypesContainer::CreateStackReference(
+     // the reported structure offset) so we don't create a substitution at all.
+     return TypeReference::CreateEmptyReference();
+   }
+-  const BaseType* base_type = GetStackFrame(function->startEA);
++  const BaseType* base_type = GetStackFrame(function->start_ea);
+   if (!base_type) {
+     LOG(INFO) << StringPrintf("Stack frame of function: %08llx corrupted.",
+-                              function->startEA);
++                              function->start_ea);
+     return TypeReference::CreateEmptyReference();
+   }
+ 
+@@ -622,7 +626,7 @@ TypesContainer::TypeReference IdaTypesContainer::ResolveDisplacedTypeReference(
+   int64_t signed_displacement = Instruction::IsNegativeValue(displacement)
+                                     ? static_cast<int32_t>(displacement)
+                                     : static_cast<int64_t>(displacement);
+-  if (isStkvar(get_flags_novalue(static_cast<ea_t>(address)), operand_num)) {
++  if (is_stkvar(get_flags(static_cast<ea_t>(address)), operand_num)) {
+     return CreateStackReference(address, operand_num, signed_displacement);
+   }
+   return CreateNonStackReference(address, operand_num, signed_displacement);
+@@ -647,12 +651,12 @@ TypesContainer::TypeReference IdaTypesContainer::ResolveTypeReference(
+ 
+ TypesContainer::TypeReference IdaTypesContainer::ResolveMemoryTypeReference(
+     Address immediate) const {
+-  const flags_t flags = getFlags(immediate);
+-  if (isOff(flags, 0 /* operand number*/)) {
++  const flags_t flags = get_full_flags(immediate);
++  if (is_off(flags, 0 /* operand number*/)) {
+     // We treat every datum pointing anywhere else as void* since we can not
+     // currently handle function pointers or intra-section offsets.
+     return TypeReference::CreateBaseTypeReference(GetVoidPointerType());
+-  } else if (isASCII(flags)) {
++  } else if (is_strlit(flags)) {
+     // TODO(jannewger): actually emit a char array of the corresponding size.
+     return TypeReference::CreateBaseTypeReference(
+         GetBuiltinType(get_item_size(immediate) * 8 /* bits per byte*/));
+@@ -686,7 +690,7 @@ void IdaTypesContainer::CreateFunctionPrototype(const Function& function) {
+   const Address address = function.GetEntryPoint();
+ 
+   tinfo_t tif;
+-  if (!get_tinfo2(address, &tif) && !guess_tinfo2(address, &tif)) {
++  if (!get_tinfo(&tif, address) && !guess_tinfo(&tif, address)) {
+     return;
+   }
+ 
+diff --git a/ida/ui.cc b/ida/ui.cc
+index 0947c57..784830b 100644
+--- a/ida/ui.cc
++++ b/ida/ui.cc
+@@ -33,7 +33,7 @@ WaitBox::WaitBox(StringPiece message, WaitBox::Cancellable cancel_state)
+ 
+ WaitBox::~WaitBox() { hide_wait_box(); }
+ 
+-bool WaitBox::IsCancelled() { return wasBreak(); }
++bool WaitBox::IsCancelled() { return user_cancelled(); }
+ 
+ void WaitBox::ReplaceText(StringPiece message) const {
+   replace_wait_box("%s", FormatMessage(message, cancellable_).c_str());

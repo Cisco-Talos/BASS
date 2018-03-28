@@ -89,6 +89,7 @@ RUN mkdir server
 WORKDIR server
 COPY files/server/server.py .
 COPY files/server/start.sh .
+COPY files/json/api_db.json .
 RUN chmod +x start.sh
 
 ENTRYPOINT ["./start.sh"]

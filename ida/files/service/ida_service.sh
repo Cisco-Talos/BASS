@@ -38,6 +38,6 @@ done
 if [ -z ${CORES+x} ]; then CORES=8;fi
 if [ -z ${TIMEOUT+x} ]; then TIMEOUT=30;fi
 
-echo EXECUTING gunicorn -w $CORES -t $TIMEOUT -b 0.0.0.0:80 flask_service:app in ${PREFIX}/packages/bindiff/service
-cd ${PREFIX}/packages/bindiff/service
-gunicorn -w $CORES -t $TIMEOUT -b 0.0.0.0:80 flask_service:app
+echo EXECUTING gunicorn -w $CORES -t $TIMEOUT -b 0.0.0.0:80 ida_service:app in ${PREFIX}
+cd ${PREFIX}
+gunicorn -w $CORES -t $TIMEOUT -b 0.0.0.0:80 ida_service:app

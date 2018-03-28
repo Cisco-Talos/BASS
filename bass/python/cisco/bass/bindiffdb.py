@@ -133,7 +133,7 @@ class BinDiff():
                    "edges"]
 
         query = ("select %s from " + \
-                "function where %s order by similarity, confidence desc limit %d") % \
+                "function where %s order by similarity desc, confidence desc limit %d") % \
                     (", ".join(columns),
                     " and ".join(conditions),
                     limit)

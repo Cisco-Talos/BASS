@@ -46,12 +46,18 @@ def get_many_bytes(start, length):
 
 def pickle_database(path):
     info = idaapi.get_inf_structure()
+    if hasattr(info, "is_be"):
+        endianness = "big" if info.is_be() else "little"
+    elif hasattr(idaapi.cvar.inf, "mf"):
+        endianness = "big" if idaapi.cvar.inf.mf else "little"
+    else:
+        endianness = None
     database = {
         "segments": [],
         "architecture" : {
             "name": info.procName,
             "bits": 32 if info.is_32bit() else (64 if info.is_64bit() else None),
-            "endian": "big" if idaapi.cvar.inf.mf else "little",
+            "endian": endianness,
         },
         "entry_points": [{"index": idx, "ordinal": ordnl, "address": ea, "name": name} for \
                 idx, ordnl, ea, name in Entries()],
@@ -107,7 +113,7 @@ def pickle_database(path):
         "address": x.ea, 
         "data": str(x),
         "encoding_size": 1 if x.is_1_byte_encoding() else (2 if x.is_2_byte_encoding() else (4 if x.is_4_byte_encoding() else None)),
-        "type": x.type} for x in Strings()]
+        "type": getattr(x, "type", getattr(x, "strtype", None))} for x in Strings()]
 
     database["functions"] = [{
         "entry_point": x,
@@ -132,16 +138,37 @@ def pickle_database(path):
 def binexport_database(path):
     idc.Eval("BinExport2Diff9(\"%s\")" % path)
 
-def main(args):
+def handle_binexport(args):
+    binexport_database(args.bindiff_output)
+
+def handle_pickle(args):
+    pickle_database(args.pickle_output)
+
+def handle_binexport_pickle(args):
     binexport_database(args.bindiff_output)
     pickle_database(args.pickle_output)
 
+def main(args):
+    args.handler(args)
     return 0
 
 def parse_args():
     parser = argparse.ArgumentParser(description = "IDA Pro script: Dump bindiff database file")
-    parser.add_argument("bindiff_output", type = str, help = "Output BinDiff database file")
-    parser.add_argument("pickle_output", type = str, help = "Output pickle database file")
+    subparsers = parser.add_subparsers(help = "subcommand")
+    
+    parser_pickle = subparsers.add_parser("pickle", help = "Dump pickled database")
+    parser_pickle.add_argument("pickle_output", type = str, help = "Output pickle database file")
+    parser_pickle.set_defaults(handler = handle_pickle)
+
+    parser_bindiff = subparsers.add_parser("binexport", help = "Dump bindiff database")
+    parser_bindiff.add_argument("bindiff_output", type = str, help = "Output BinExport database file")
+    parser_bindiff.set_defaults(handler = handle_binexport)
+
+    parser_bindiff_pickle = subparsers.add_parser("binexport_pickle", help = "Dump bindiff database and pickled database")
+    parser_bindiff_pickle.add_argument("bindiff_output", type = str, help = "Output BinDiff database file")
+    parser_bindiff_pickle.add_argument("pickle_output", type = str, help = "Output pickle database file")
+    parser_bindiff_pickle.set_defaults(handler = handle_binexport_pickle)
+
     args = parser.parse_args(idc.ARGV[1:])
 
     return args

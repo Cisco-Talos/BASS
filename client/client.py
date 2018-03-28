@@ -49,7 +49,7 @@ class Job():
     def add_sample(self, paths):
         if isinstance(paths, str):
             paths = [paths]
-        reply = requests.post("%s/job/%d/add_sample" % (self.url, self.id), files = [(path, open(path, "rb")) for path in paths])
+        reply = requests.post("%s/job/%d/add_sample" % (self.url, self.id), files = [(path, open(path, "rb")) for path in paths[0].split(",")])
         if reply.status_code != 200:
             try:
                 message = reply.json()["message"]
@@ -109,6 +109,7 @@ class Bass():
 def main(args, env):
     bass = Bass(args.url)
     job = bass.create_job()
+    print args
     for sample in args.samples:
         job.add_sample(sample)
     job.submit()
@@ -116,6 +117,7 @@ def main(args, env):
     if status == "completed":
         log.info("Job completed, generated signature is %s", job.result)
 
+        print job.result
         if not job.result["signatures"]:
             if args.output:
                 sys.stderr.write("No signature found\n")
@@ -131,11 +133,12 @@ def main(args, env):
                     signature["metrics"]["num_triggering_samples"],
                     signature["metrics"]["coverage"] * 100.0)
             if args.output:
-                if os.path.splitext(args.output)[1].lower() != signature["signature"]["type"]:
+                if os.path.splitext(args.output)[1][1:].lower() != signature["signature"]["type"]:
                     log.warn("Signature output file extension %s does not " + \
                              "correspond to signature type %s",
                              os.path.splitext(args.output)[1], signature["signature"]["type"])
                 else:
+                    print(":: Writing the generated signature on the following file: %s" % (args.output))
                     with open(args.output, "w") as f:
                         f.write(signature["signature"]["signature"])
             else:

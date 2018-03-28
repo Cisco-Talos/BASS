@@ -1,31 +1,36 @@
-from cisco.bass.util import file_sha256
-from Queue import Queue, Empty
-from concurrent.futures import ThreadPoolExecutor
-import logging
-from pkg_resources import resource_filename
-from threading import Lock, Condition, current_thread, Event
-from cisco.bass.thread import Thread
-from cisco.bass.docker.bindiff import Client as BindiffClient
-from cisco.bass.docker.bindiff import Database
-import magic
-import itertools
-import tempfile
-import subprocess
-import os
-import traceback
-import shutil
 import re
-from cisco.bass.bindiffdb import BinDiff as BinDiffDb
-from collections import defaultdict
-from networkx import Graph
-from networkx.drawing.nx_agraph import write_dot
-from cisco.bass.algorithms import ndb_from_common_sequence, hamming_klcs
+import os
+import json
+import magic
+import shutil
 import random
+import logging
+import tempfile
+import itertools
+import traceback
+import subprocess
+import shutil
+from networkx import Graph
+from Queue import Queue, Empty
+from threading import Lock, Condition, current_thread, Event
+from concurrent.futures import ThreadPoolExecutor
+from pkg_resources import resource_filename
+from networkx.drawing.nx_agraph import write_dot
+from collections import defaultdict
+from virus_total_apis import PrivateApi
+from cisco.bass.util import file_sha256
+from cisco.bass.thread import Thread
+from cisco.bass.docker.bindiff import IdaClient, BindiffClient
+from cisco.bass.docker.bindiff import Database
+from cisco.bass.docker.funcdb import FuncDB
+from cisco.bass.bindiffdb import BinDiff as BinDiffDb
+from cisco.bass.algorithms import ndb_from_common_sequence, hamming_klcs
 from cisco.bass.avclass import ComputeVtUniqueName
-from virus_total_apis import PublicApi
 
 DUMMY_HSB_PATH = resource_filename("cisco.bass.resources", "dummy.hsb")
-BINDIFF_SERVICE_URL = "http://bindiff:80"
+IDA_SERVICE_URL = "http://ida:80"
+BINDIFF_SERVICE_URL = "http://ida:80"
+FUNCDB_SERVICE_URL = "http://funcdb:80"
 GENERIC_CLAMAV_MALWARE_NAME = "Win.Malware.BassGeneric"
 log = logging.getLogger("cisco.bass")
 
@@ -62,7 +67,7 @@ def get_num_triggering_samples(signature, samples):
 
 def get_VT_name(hashes):
     try:
-        vt = PublicApi(api_key = os.environ["VIRUSTOTAL_API_KEY"])
+        vt = PrivateApi(api_key = os.environ["VIRUSTOTAL_API_KEY"])
         generator = ComputeVtUniqueName()
         names = [generator.build_unique_name(vt.get_file_report(hash_) or "") for hash_ in hashes]
         if len(names) >= 2 and all(names[0] == name for name in names[1:]):
@@ -76,7 +81,6 @@ def get_VT_name(hashes):
         log.warn("No VIRUSTOTAL_API_KEY specified. Falling back to generic name.")
     except Exception:
         log.exception("White trying to compute VT name. Falling back to generic name.")
-
     return GENERIC_CLAMAV_MALWARE_NAME
 
 class Sample():
@@ -119,7 +123,8 @@ class Job():
     def cancel(self):
         with self.status_lock:
             if self.status == self.STATUS_RUNNING:
-                self.thread.raise_exc(JobCanceledException)
+                #self.thread.raise_exc(JobCanceledException)
+                self.thread.terminate()
             elif self.status == self.STATUS_CREATED:
                 self.status = self.STATUS_CANCELED
 
@@ -153,12 +158,15 @@ class FileTypeInspector(Inspector):
     DEPENDS = (MagicInspector.NAME, )
 
     TYPE_PE = "PE"
+    TYPE_ELF = "ELF"
     TYPE_UNKNOWN = "unknown"
 
     ASSOCIATIONS = {}
 
     RE_PE_EXECUTABLE = re.compile("^PE32\+? executable")
     RE_PE_NOTE = re.compile("for MS Windows, (.*)$")
+
+    RE_ELF_EXECUTABLE = re.compile("^ELF")
 
     def inspect(self, sample):
         try:
@@ -211,6 +219,14 @@ class FileTypeInspector(Inspector):
                 note = self.RE_PE_NOTE.search(mgc)
                 info["note"] = note.group(1) if note else None
                 sample.info[self.NAME] = info
+            elif self.RE_ELF_EXECUTABLE.search(mgc):
+                info = {"type": self.TYPE_ELF}
+                # TODO: Support more architecture
+                if "64-bit LSB" in mgc:
+                    info["arch"] = "x86-64"
+                    info["bits"] = 64
+                    info["subsystem"] = None
+                    sample.info[self.NAME] = info
             else:
                 sample.info[self.NAME] = {"type": self.TYPE_UNKNOWN}
                 log.warn("Don't know file type of magic string '%s' for sample %s", sample.info[MagicInspector.NAME]["magic"], sample.sha256)
@@ -236,7 +252,40 @@ class Bass():
         self.terminate = False
         self.threads = [start_thread(self.process_job) for _ in range(worker_threads)]
         self.bindiff = BindiffClient(urls = [BINDIFF_SERVICE_URL])
+        self.whitelist = FuncDB(FUNCDB_SERVICE_URL)
+        self.ida = IdaClient(urls = [IDA_SERVICE_URL])
 
+    def whitelist_add(self, path, functions = None):
+        tempfiles = []
+        try:
+            sample = Sample(path, name = "")
+            for inspector in self.inspectors:
+                inspector.inspect(sample)
+            log.info("sample.path = %s, sample.info = %s", sample.path, str(sample.info)) 
+
+            accepted_file_types = [FileTypeInspector.TYPE_PE, FileTypeInspector.TYPE_ELF]
+            if sample.info[FileTypeInspector.NAME]["type"] not in accepted_file_types:
+                raise ValueError(("whitelist_add was given a sample with file type '{}', " + \
+                                  "but only accepts file types {}").format(
+                                        sample.info[FileTypeInspector.NAME]["type"],
+                                        ", ".join(accepted_file_types)))
+
+            pickle_db = self.ida.pickle_export(sample.path, sample.info[FileTypeInspector.NAME]["bits"] == 64)
+
+            if pickle_db is None:
+                #IDA Pro analysis failed
+                raise RuntimeError("Exporting pickle DB from disassembled executable failed. Cannot add sample to whitelist")
+            tempfiles.append(pickle_db)
+            db = Database.load(pickle_db)
+
+            if functions is not None:
+                db.data["functions"] = [f for f in db.data["functions"] if f["name"] in functions]
+            #TODO: Filter functions by minimum number of BBs/edges/instructions
+            self.whitelist.add(db)
+        finally:
+            for f in tempfiles:
+                os.unlink(f)
+            
     def create_job(self):
         with self.jobs_lock:
             job = Job(self.job_counter)
@@ -268,11 +317,17 @@ class Bass():
             job.cancel()
             del self.jobs[job_id]
             
-
     def terminate(self):
         self.terminate = True
         for job in self.jobs:
             job.cancel()
+        self.unpack_executor.shutdown()
+        self.inspect_executor.shutdown()
+
+    def kill(self):
+        self.terminate = True
+        for job in self.jobs:
+            self.jobs[job].cancel()
         self.unpack_executor.shutdown()
         self.inspect_executor.shutdown()
 
@@ -308,7 +363,18 @@ class Bass():
 
                 list(self.inspect_executor.map(inspect, itertools.chain(job.samples, (fragment for sample in job.samples for fragment in sample.fragments))))
 
+                if all("type" not in x.info.keys() for x in job.samples): raise Exception("Something went wrong - Binaries probably not supported!")
+
+                # Cleaning the dataset to have only PE and ELF files in the list.
+                log.info("Cleaning dataset...")
+                for sample in job.samples:
+                    if sample.info[FileTypeInspector.NAME]["type"] not in [FileTypeInspector.TYPE_PE, FileTypeInspector.TYPE_ELF]:
+                        log.info("Bye bye %s" % sample.name)
+                        del job.samples[job.samples.index(sample)]
+
                 # For packed PE samples, replace them with their unpacked version
+                log.info("EMDEL")
+                log.info(len(job.samples))
                 for i in range(len(job.samples)):
                     sample = job.samples[i]
                     if sample.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE and "packed" in sample.info[FileTypeInspector.NAME]:
@@ -320,12 +386,16 @@ class Bass():
                         else:
                             log.warn("Original sample %s is packed, and more than one PE files have been extracted from it. Don't know how to continue, will use original sample", sample.sha256)
 
-                # If all samples are PE, send them to Bindiff/LCS
+                # If all samples are ELF/PE, send them to Bindiff/LCS
                 if all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE for x in job.samples):
+                    log.info("All samples are PE files")
+                    job.result = self._build_bindiff_lcs_signature(job)
+                elif all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_ELF for x in job.samples):
+                    log.info("All samples are ELF files")
                     job.result = self._build_bindiff_lcs_signature(job)
                 else:
-                    log.error("Cannot handle a case where not all samples are PE files yet")
-                    raise NotImplementedError("Cannot handle a case where not all samples are PE files yet")
+                    log.error("Cannot handle a case where not all samples are PE/ELF files yet")
+                    raise NotImplementedError("Cannot handle a case where not all samples are either ELF or PE files yet")
                 with job.status_lock:
                     job.status = Job.STATUS_COMPLETED
             except JobCanceledException:
@@ -352,12 +422,12 @@ class Bass():
 
     def _build_bindiff_lcs_signature(self, job):
         log.info("Building a Bindiff/LCS signature for job %d", job.id)
-#        if (len(job.samples) != 2):
-#            return {"message": "Can only handle two samples at the moment"}
         temporary_paths = []
         try:
-            ida_pickle_dbs = list(self.idb_executor.map(lambda sample: self.bindiff.bindiff_pickle_export(sample.path, sample.info[FileTypeInspector.NAME]["bits"] == 64), job.samples))
+            ida_pickle_dbs = list(self.idb_executor.map(lambda sample: self.ida.bindiff_pickle_export(sample.path, sample.info[FileTypeInspector.NAME]["bits"] == 64), job.samples))
+            log.info("ida_pickle_dbs: %s", str(ida_pickle_dbs))
             binexport_dbs = [binexport_db for binexport_db, _ in ida_pickle_dbs]
+            log.info("binexport_dbs: %s", str(binexport_dbs))
             pickle_dbs = [pickle_db for _, pickle_db in ida_pickle_dbs]
             
             temporary_paths += binexport_dbs
@@ -367,11 +437,19 @@ class Bass():
             binexport_pairs = list(itertools.combinations(binexport_dbs, 2))
             pickle_pairs = list(itertools.combinations(pickle_dbs, 2))
             log.debug("Comparing %d pairs of binaries with each other", len(pickle_pairs))
-            bindiff_dbs = list(self.bindiff_executor.map(lambda x: self.bindiff.bindiff_compare(*x), binexport_pairs))
+            bindiff_dbs = list(self.bindiff_executor.map(lambda x: self.bindiff.compare(*x), binexport_pairs))
             temporary_paths += bindiff_dbs
 
             log.debug("Building graph of similar functions")
             graph = Graph()
+
+            # PE check:
+            if all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE for x in job.samples):
+                # Loading JSON file
+                log.debug("Loading JSON file containing APIs")
+                h = open("api_db.json")
+                json_apis = json.loads(h.read())
+                h.close()
 
             for bindiff_db_path, (sample1_pickle_db_path, sample2_pickle_db_path) in zip(bindiff_dbs, pickle_pairs):
                 sample1_db = Database.load(sample1_pickle_db_path)
@@ -380,15 +458,89 @@ class Bass():
 
                 assert(bindiff_db.get_binary(1).get_exefilename() == sample1_db.filename)
                 assert(bindiff_db.get_binary(2).get_exefilename() == sample2_db.filename)
-    
+
+		# Useful for debugging 
+                for f in sample1_db.functions:
+                    log.info("%s: %s" % (f.name, f.data["is_library_function"]))
+
+                # default
                 for similar_func in bindiff_db.get_similar_functions(min_similarity = 0.6,
                                                                      min_confidence = 0.5,
                                                                      min_instructions = 50,
                                                                      min_bbs = 3,
                                                                      min_edges = 4,
                                                                      limit = 10):
-                    # TODO: The weight might need to be tuned
-                    weight = similar_func["similarity"] * similar_func["confidence"]
+
+                    # Filtering known functions
+                    cur_f1 = sample1_db.get_function(int(similar_func["address1"]))
+                    cur_f2 = sample2_db.get_function(int(similar_func["address2"]))
+                    if cur_f1.is_library_function or cur_f2.is_library_function:
+                        log.info("Skipping function - Reason: library function")
+                        continue
+        
+		    # Filtering by name
+                    if not cur_f1.name.startswith("sub_") or not cur_f2.name.startswith("sub_"):
+                        log.info("Skipping function - Reason: name")
+                        # Debug
+                        log.info("%s - %s" % (cur_f1.name, cur_f2.name))
+                        continue
+                   
+                    # Filtering by APIs list
+                    if all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE for x in job.samples):
+                        if cur_f1.apis != cur_f2.apis:
+                            log.info("Skippig function - Reason: different apis")
+                            # Debug
+                            log.info(cur_f1.apis)
+                            log.info(cur_f2.apis)
+                            continue
+                    
+                    # Filtering by length
+                    if similar_func["basicblocks"] < 10:
+                        log.info("Skipping function - Reason: length")
+                        continue
+
+                    # Collecting stats
+                    if all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE for x in job.samples):
+                        msvcrt = 0
+                        mutex = 0
+                        antidbg = 0
+                        apialert = 0
+                        for a in cur_f1.apis:
+                            if a in json_apis["msvcrt"]:
+                                msvcrt += 1
+                            elif a in json_apis["mutex"]:
+                                mutex += 1
+                            elif a in json_apis["antidbg"]:
+                                antidbg += 1
+                            elif a in json_apis["apialert"]:
+                                apialert += 1
+                       
+                        # Printing stats for debugging
+                        log.info(cur_f1.apis)
+                        log.info("MSVCRT:")
+                        log.info(msvcrt)
+
+                        log.info("MUTEX:")
+                        log.info(mutex)
+
+                        log.info("ANTIDBG:")
+                        log.info(antidbg)
+
+                        log.info("APIALERT")
+                        log.info(apialert)
+
+                    # TODO: The weight might need to be tuned - Proposal 1
+                    if all(x.info[FileTypeInspector.NAME]["type"] == FileTypeInspector.TYPE_PE for x in job.samples):
+                        base_weight = similar_func["similarity"] * similar_func["confidence"]
+                        weight = base_weight + antidbg + apialert + mutex - msvcrt
+                    else:
+                        weight = similar_func["similarity"] * similar_func["confidence"]
+                   
+                    # Debug print
+                    log.info("DEBUG WEIGHT:")
+                    log.info(weight)
+                    log.info(similar_func)     
+		 
                     graph.add_edge((sample1_db, int(similar_func["address1"])),
                                    (sample2_db, int(similar_func["address2"])),
                                    weight = weight)
@@ -467,7 +619,8 @@ class Bass():
                 log.debug("Function %s:%d has %d chunks", sample_db.sha256, function_ep, len(list(function.chunks)))
                 #TODO: This is wrong. You cannot simply append this, in case there are gaps between the chunks,
                 # a '*' operator needs to be inserted in the final sig
-                functions_code.append("".join(chunk.bytes for chunk in function.chunks))
+                if not self.whitelist.find_raw(sample_db, entry_points = [function_ep]):
+                    functions_code.append("".join(chunk.bytes for chunk in function.chunks))
             log.debug("Longest code sequence is %s bytes", max(len(x) for x in functions_code))
 
             log.debug("Finding common subsequence in binary code")

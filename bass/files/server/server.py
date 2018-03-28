@@ -63,6 +63,27 @@ def job_delete(job_id):
     except KeyError:
         return make_response(jsonify(message = "Invalid job id"), 400)
 
+@app.route("/whitelist", methods = ["POST"])
+def whitelist_add():
+    log.info("whitelist_add called")
+    try:
+        file_ = request.files["file"]
+        handle, filename = tempfile.mkstemp()
+        os.close(handle)
+        file_.save(filename)
+        data = request.get_json()
+        if data and "functions" in data:
+            functions = data["functions"]
+        else:
+            functions = None
+        bass.whitelist_add(filename, functions)
+        os.unlink(filename)
+    except KeyError:
+        log.exception("")
+        return make_response(jsonify(message = "Sample file 'file' missing in POST request"), 400)
+
+    return jsonify(message = "OK")
+
 if __name__ == "__main__":
     logging.basicConfig(filename = datetime.datetime.now().strftime("/logs/bass_%Y-%m-%d_%H-%M-%S.log"), level = logging.DEBUG)
     logging.getLogger().setLevel(logging.DEBUG)

@@ -72,6 +72,7 @@ class ComputeVtUniqueName:
         if vt_data_record is None:
             return None
 
+        signature = None
         if vt_data_record.get('response_code', 0):
             self.record = {'sha1': vt_data_record.get('sha1', None), 'md5': vt_data_record.get('md5', None),
                            'sha256': vt_data_record.get('sha256', None),
