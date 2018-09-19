@@ -30,18 +30,18 @@ Further, the client to speak to the docker cluster needs the python _requests_
 package installed. This can for example be done with `pip install requests` if
 you use python's pip package manager.
 
-Finally, you need docker-ida to build a container for IDA Pro. On \*nix, you
-can get and build docker-ida with the following commands:
+To build the containers, you need to export some environment variables:
+```
+IDA_BINARY=... #Make this variable point to your IDA Pro installation binary
+IDA_PASSWORD=... #Set this variable to your IDA Pro installation password
+IDA_WEB_PASSWORD=... #Set this variable to your IDA Pro restriced web password
+cp ${IDA_BINARY} ida7/ida.run
+export IDA_PASSWORD
+export IDA_WEB_PASSWORD
+```
 
-    IDA_BINARY=... #Make this variable point to your IDA Pro installation binary
-    IDA_PASSWORD=... #Set this variable to your IDA Pro installation password
-    git clone https://github.com/intezer/docker-ida
-    cp ${IDA_BINARY} docker-ida/ida/ida.run
-    export IDA_PASSWORD
-    docker build -t ida docker-ida/ida/
-
-You have to set the two variables at the beginning, and you need to tag the
-resulting docker container with "ida".
+You need to set the variables whenever you open a new shell that you want to
+use to build or run BASS.
 
 ### Building the containers
 Normally it should be enough to run `docker-compose build` in the repository
